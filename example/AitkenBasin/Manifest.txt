@@ -1,0 +1,9 @@
+Name: see/smackdown/aitken_basin
+Specification-Title: SEE Smackdown Aitken Basin Federate
+Specification-Version: 2015
+Specification-Vendor: Edwin Z. Crues
+Implementation-Title: Environment Federate
+Implementation-Version: 0.1
+Implementation-Vendor: Edwin Z. Crues
+Main-Class: see.smackdown.aitken_basin.AitkenBasin
+Class-Path: Environment.jar jat.jar jargs.jar rti1516e.jar

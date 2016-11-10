@@ -1,0 +1,165 @@
+﻿
+                			   THE SEE HLA STARTER KIT 
+                		
+                		---	a Java Example HLA Federate ---
+        
+This file contains information on an example SEE HLA Federate created by using the 
+capabilities provided by the SEE HLA Starter Kit.
+The SEE HLA Start Kit is released under the open source policy Lesser GNU Public License 
+(LGPL) and aims at supporting the development of HLA Federates in the context of the SEE project.
+It allows developers to focus on the specific aspects of their own Federates rather than 
+dealing with the common HLA issues such as the management of the simulation time; 
+the connection/disconnection on/from the HLA RTI; the publish, subscribe and updating of 
+ObjectClass and InteractionClass elements. 
+The SEE HLA Starter Kit is designed and developed by the SMASH-Lab (System Modeling And Simulation Hub - 
+Laboratory) of the University of Calabria working in cooperation with NASA JSC 
+(Johnson Space Center).
+
+For more detail about the SEE HLA Starter Kit, please, 
+visit: https://code.google.com/p/see-hla-starterkit/.
+
+ NOTE: Knowledge of the HLA is assumed, but if you are just getting started out,
+       there are some resources on the SEE project website (http://www.exploresim.com/) 
+       that you may find helpful.
+
+Table of Contents:
+  1. Getting Started
+  2. Supported Java JDK and HLA/RTI implementation
+  3. The "LunarRover" example step-by-step (with Resources)
+  4. Running the "LunarRover" Federate
+
+------------------------------------------------------------------------------------------
+ 1. Getting Started
+------------------------------------------------------------------------------------------
+ This example application provides the basic template code for a very simple
+ SEE HLA Federate created by using the capabilities provided by the SEE HLA Starter Kit and 
+ its software Framework (SKF). 
+ It is not intended to be an impression display of what you can do with the SEE HLA Starter 
+ Kit, but rather just a display of how to use it.
+ 
+ The "LunarRover" example Federate consists of six main files:
+   * src/core/LunarRoverFederate.java           	// The LunarRover Federate
+   * src/core/LunarRoverFederateAmbassador.java 	// The LunarRover Federate Ambassador
+   * src/model/LunarRover.java			        	// The LunarRover model
+   * src/model/Position.java			        	// The 3-Vector position object
+   * src/model/HLAPositionCoder.java				// The Position's coder
+   * src/Main.java									// The main class
+   
+
+ The actual design of the 'LunarRover' Federate is very simple. It just publishes the 
+ 'LunarRover' entity and every simulation step updates its position. In addition to 
+ publishing information, the 'LunarRover' Federate also subscribes the 'MoonCentricFixed' 
+ ReferenceFrame, which is published and updated by the 'Environment' Federate.
+ 
+ The 'LunarRoverFederateAmbassador' class is used by the SKF for interacting with both the 
+ 'LunarRover' Federate and the HLA/RTI infrastructure.
+ 
+ The 'LunarRover' class defines the structure and attributes of the vehicle according to
+ the SKF specification.
+ 
+ The 'Position' class defines a 3-vector that specifies the position of the vehicle body 
+ frame origin with respect to the parent reference frame.
+ 
+ The 'HLAPositionCoder' class defines a specific coder, which is created according to the
+ SKF specification, to encode and decode a Position object.
+ 
+ 
+------------------------------------------------------------------------------------------
+ 2. Supported Platforms
+------------------------------------------------------------------------------------------
+
+ The SEE HLA Starte Kit is officially supported on:
+
+  * Java JDK 7 (version 7+)
+  * Pitch RTI (version 5.0.1.0); MÄK RTI (version 4.2h)
+  * Ubuntu 12.04 LTS for 32 and 64-bit
+  * Mac OS X 10.8+ for 64-bit
+  * Windows 7/8 32/64-bit
+
+ --- JAVA ---
+ 
+ * JDK Requirements
+ Please note that you need to have a JDK installed on your system and have
+ the environment variable JAVA_HOME set to point to it in order to compile
+ the 'LunarRover' Federate.
+
+ * JDK Version
+ The SEE HLA Starter Kit has been built by using Java 7 and requires a Java 7 JDK. 
+ If you are using a Java 6 environment or earlier, the 'LunarRover' Federate may work,
+ but that is not officially supported.
+ 
+ --- HLA/RTI infrastructure ---
+ 
+ * Please note that you need to have an HLA/RTI infrastructure installed on your system
+   (e.g. PITCH RTI, MÄK, etc.). 
+   
+ 
+------------------------------------------------------------------------------------------
+ 4. The "LunarRover" example step-by-step (with Resources)
+------------------------------------------------------------------------------------------
+
+ This section describes how to implement a simple SEE Federate (in this case The 
+ "LunarRover" federate) by using the SEE HLA Starter Kit and the Eclipse for Java developer
+ IDE (website: http://eclipse.org/home/index.php). 
+ 
+ 1. Create a new Java Project. Click on File -> New -> Java Project.
+ 2. Fill in the "project name" field with the name of the project (in this case: LunarRover).
+ 3. Be sure that you use a JRE version 7.0 or higher. 
+ 4. Expanding the Java project and create four folders:
+	4.1 a "lib" folder, which will contain the SKF jar and the HLA/RTI jars (in this 
+		example: the PITCH RTI jars).
+	4.2 a "log4j" folder, which will contain the xml file created according to the 
+	    Apache Log4j2 specification.
+	4.3 a "foms" folder that will contain the LunarRover.xml file.
+	4.4 and, a "config" folder that will contain the json configuration file.
+ 5. Put in the: 
+ 	5.1 "config" folder a configuration json file that contains all the parameters 
+    	    that will be used by the SEE HLA Starter Kit to set up and manage the "LunarRover" 
+    	    Federate;
+        5.2 "foms" folder the LunarRover.xml file;
+        5.3 "log4j" folder a specific xml file created according to the Apache Log4j2 
+            specification. This xml file enables the Logging service of the SEE HLA StarterKit;
+        5.4 "lib" folder the SKF.jar file and the HLA/RTI jars (for PITCH/RTI: booster.jar, 
+             prti.jar, prti1516e.jar, and, prticore.jar that are available in the PITCH installation
+             directory). After that, add all jars to the project build path.
+ 6. Create the Java code.
+ 	6.1 Create a new package called "model", which will contain the java code related to 
+ 	    the structure of the "LunarRover" Federate (see: src/model/LunarRover.java;
+   		src/model/Position.java; and, src/model/HLAPositionCoder.java).
+   	6.2 Create a new package called "core", which will contains the Federate and Federate 
+   	    Ambassador of the "LunarRover" Federate (see: src/core/LunarRoverFederate.java; and,
+   		src/core/LunarRoverFederateAmbassador.java).
+   	6.3 Create the LunarRover Main class (see: Main.java)
+    
+------------------------------------------------------------------------------------------
+ 4. Running the "LunarRover" Federate
+------------------------------------------------------------------------------------------
+ 	
+ 	This section describes how to run the "LunarRover" Federate in the SEE 2015 Federation
+ 	Environment.
+	
+	1. Run PITCH/RTI;
+	2. Run the 'Environment' Federate provided by the NASA team;
+	3. Finally, run the "LunarRover" Federate. If you want enable the SKF logging services,
+	   put in the classpath of the project the "log4j" folder (*). In this way you can trace 
+	   the execution of the LunarRover Federate during its simulation in the SEE 2015 
+	   Federation Environment.
+
+        The actions performed by the 'LunarRover' Federate are the following:
+        
+   	a. Load the configuration parameters from a .json file
+   	b. Connect to the SEE 2015 Federation
+   	c. Join the SEE 2015 Federation
+   	d. Publish the 'LunarRover' entity and Subscribe the 'MoonCentricFixed' ReferenceFrame
+   	e. Execution-Loop, doing the following each step:
+       		* The position of the 'LunarRover' is updated of 10 units along the x axis so as to
+       	 	reflect its moving.
+   	f. Wait for the user to press any key
+   	l. Delete the object instance
+   	m. Resign from the SEE 2015 Federation
+	   
+	NOTE:
+	* To add the "log4j" folder in the project's classpath click on:
+		 Run -> Run Configuration -> [classpath tab] -> click on user Entries -> Advanced
+		 -> Select Add Folder -> select the location of your log4j folder, and then -> OK.
+ 

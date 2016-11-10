@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="lib">
+    <CLASSES>
+      <root url="file://C:/Program Files/prti1516e/lib" />
+    </CLASSES>
+    <JAVADOC />
+    <NATIVE>
+      <root url="file://C:/Program Files/prti1516e/lib" />
+    </NATIVE>
+    <SOURCES>
+      <root url="file://C:/Program Files/prti1516e/lib" />
+    </SOURCES>
+    <jarDirectory url="file://C:/Program Files/prti1516e/lib" recursive="false" />
+    <jarDirectory url="file://C:/Program Files/prti1516e/lib" recursive="false" type="SOURCES" />
+  </library>
+</component>

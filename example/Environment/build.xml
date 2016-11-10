@@ -1,0 +1,67 @@
+<project default="build" basedir=".">
+   <property name="Name" value="Environment"/>
+   <property name="debug" value="on"/>
+   <property name="build.src" value="src"/>
+   <property name="build.classes" value="classes"/>
+   <property name="javadoc.outdir" value="docs/java"/>
+   <property name="javadoc.doctitle" value="SISO Smackdown Environment Federate"/>
+   <property name="javadoc.header" value="Environment Federate"/>
+   <property name="javadoc.bottom" value="Author: Edwin Z. Crues"/>
+   <property name="javadoc.packages" value="siso.smackdown.environment"/>
+	
+   <property name="jat.jars" value="jat/lib/jatcore.jar:jat/lib/jatcoreNOSA.jar"/>
+   <property name="jargs.jars" value="lib/jargs.jar"/>
+   <property name="rti.jars" value="lib/rti1516e.jar"/>
+   <property name="ext.jars" value="${jat.jars}:${jargs.jars}:${rti.jars}"/>
+
+   <target name="build" description="Build Environment Federate."
+           depends="compile,jar,javadoc" />
+
+   <target name="main" description="Build Environment Federate."
+           depends="compile,jar,javadoc" />
+
+   <target name="compile">
+      <mkdir dir="classes"/>
+      <javac srcdir="${build.src}" destdir="${build.classes}" debug="${debug}">
+          <classpath path="${build.classes}:${ext.jars}:${java.class.path}"/>
+      </javac>
+   </target>
+
+   <target name="jar" depends="compile">
+      <mkdir dir="dist"/>
+      <mkdir dir="lib"/>
+      <copy todir="dist">
+	      <fileset dir="classes"/>
+      </copy>
+      <jar jarfile="lib/Environment.jar" basedir="dist"/>
+      <delete dir="dist"/>
+   </target>
+
+   <target name="clean"
+           description="Remove all generated files.">
+      <delete dir="dist" />
+      <delete dir="classes" />
+      <delete dir="${javadoc.outdir}" />
+      <delete file="lib/Environment.jar" />
+   </target>
+
+   <target name="javadoc">
+      <mkdir dir="${javadoc.outdir}"/>
+         <javadoc
+             sourcepath="${build.src}"
+             protected="true"
+             destdir="${javadoc.outdir}"
+             author="true"
+             version="true"
+             use="true"
+             windowtitle="${javadoc.doctitle}"
+             doctitle="${javadoc.doctitle}"
+             header="${javadoc.header}"
+             footer="${javadoc.header}"
+             bottom="${javadoc.bottom}">
+             <package name="**.*" />
+             <classpath path="${build.classes}:${ext.jars}:${java.class.path}"/>
+         </javadoc>
+  </target>
+
+</project>

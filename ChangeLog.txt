@@ -1,0 +1,35 @@
+MAJOR CHANGES in SEE HLA Starter Kit 1.2.0 (31 03 2015)
+==========================================================================
+GENERAL IMPROVEMENTS:
+- added support to AitkenBasinLocalFixed ReferenceFrame;
+- Resolved an issues regarding the "name" of an Object on RTI;
+- Resolveed an issue when an ReferenceFrame object is updated.
+
+MAJOR CHANGES in SEE HLA Starter Kit 1.1.1 (14 01 2015)
+==========================================================================
+GENERAL IMPROVEMENTS:
+- Resolved an issues that causes an "IllegalArgumentException" when an HLA Federate is running on VT MAK.
+
+MAJOR CHANGES in SEE HLA Starter Kit 1.0.1 (14 01 2015)
+==========================================================================
+GENERAL IMPROVEMENTS:
+Kernel
+- Added mechanisms to make easy the publishing, subscribing and updating of 'InteractionClass' on the federation execution.
+- Resolved an issue when publish two classes related to the same 'ElementObject'. 
+- Rewritten some core services related to the publishing, subscribing and updating of 'InteractionClass' and 'ElementObject'.
+- Bug fixing.
+
+MAJOR CHANGES in SEE HLA Starter Kit 1.0.0 (03 11 2014)
+==========================================================================
+GENERAL IMPROVEMENTS:
+Kernel
+- Added mechanisms to:
+	- manage the connection (set-up, hold-up and close up) of a SEE Federate on the federation execution;
+	- facilitate the management and the publication of FOMs modules;
+	- facilitate the management of the configuration parameters;
+	- make easy the publishing, subscribing and updating of 'ElementObjects' on the federation execution.
+- Added support for handling the simulation time and related time standard conversions (e.g. JulianDate, MJulianDate, RJulianDate and TJulianDate).
+- Added functionalities for subscribing the SEE Reference Frames.
+- Added utilities to manage the IP Configuration.
+- Improved support for logging service (based on Apache log4j2, website: http://logging.apache.org/log4j/2.x/).
+- Added features to check the MS Windows Firewall state.
