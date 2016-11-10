@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="jat/lib/jatcore.jar"/>
+	<classpathentry kind="lib" path="jat/lib/jatcoreNOSA.jar"/>
+	<classpathentry kind="lib" path="lib/Environment.jar"/>
+	<classpathentry kind="lib" path="lib/jargs.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/skf.jar"/>
+	<classpathentry kind="lib" path="C:/MAK/makRti4.4.1/lib/hla.jar"/>
+	<classpathentry kind="output" path="classes"/>
+</classpath>
