@@ -300,7 +300,7 @@ class EnvironmentHLA {
 		} else {
 			System.out.print("Federate \"");
 			System.out.print(federate_name);
-			System.out.print("\": Unknow RTI name: ");
+			System.out.print("\": Unknown RTI name: ");
 			System.out.println(rti_name);
 			return 1;
 		}

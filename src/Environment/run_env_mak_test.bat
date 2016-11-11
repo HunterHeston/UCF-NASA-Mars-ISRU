@@ -9,6 +9,6 @@ set PATH=%JAVA_LIBS%;%MAK_LIBS%;%MAK_WIN_LIBS%;%PATH%
 
 cd lib
 
-java -cp .;%MAK_RTIDIR%\lib\hla.jar;jargs.jar;..\jat\lib\jatcore.jar;..\jat\lib\jatcoreNOSA.jar;Environment.jar see.smackdown.environment.Environment
+java -cp .;%MAK_RTIDIR%\lib\hla.jar;jargs.jar;..\jat\lib\jatcore.jar;..\jat\lib\jatcoreNOSA.jar;Environment.jar see.smackdown.environment.EnvironmentTest
 :: -r 30  :: runtime of 30 seconds
 PAUSE  :: for troubleshooting
