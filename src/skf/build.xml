@@ -1,0 +1,44 @@
+<project default="build" basedir=".">
+   <property name="Name" value="SEE_Starter_Kit"/>
+   <property name="debug" value="on"/>
+   <property name="build.src" value="src"/>
+   <property name="build.bin" value="bin"/>
+	
+   <property name="ext.jars" value="lib/rti1516e.jar;lib/commons-collections4-4.0.jar;lib/jackson-all-1.9.11.jar;
+   	lib/joda-time-2.4.jar;lib/jodd-3.6.1.jar;lib/log4j-api-2.0.jar;lib/log4j-core-2.0.jar"/>
+
+   <target name="build" description="Build Lunar Rover Federate."
+           depends="compile,jar" />
+
+   <target name="main" description="Build Lunar Rover Federate."
+           depends="compile,jar" />
+
+   <target name="compile">
+      <mkdir dir="bin"/>
+      <javac srcdir="${build.src}" destdir="${build.bin}" debug="${debug}">
+          <classpath path="${build.bin};${ext.jars};${java.class.path}"/>
+      </javac>
+   </target>
+
+   <target name="jar" depends="compile">
+      <mkdir dir="dist"/>
+      <mkdir dir="lib"/>
+      <copy todir="dist">
+	      <fileset dir="bin"/>
+      </copy>
+      <jar jarfile="lib/skfTemp.jar" basedir="dist"/>
+      <delete dir="dist"/>
+	  <zip destfile="lib/skf.jar">
+	  	<zipgroupfileset dir="lib" includes="*.jar"/>
+	  </zip>
+   	  <delete file="lib/skfTemp.jar"/>
+   </target>
+
+   <target name="clean"
+           description="Remove all generated files.">
+      <delete dir="dist" />
+      <delete dir="bin" />
+      <delete file="lib/skf.jar" />
+   </target>
+
+</project>

@@ -1,0 +1,41 @@
+<project default="build" basedir=".">
+   <property name="Name" value="Lunar Rover"/>
+   <property name="debug" value="on"/>
+   <property name="build.src" value="src"/>
+   <property name="build.bin" value="bin"/>
+	
+   <property name="rti.jars" value="lib/rti1516e.jar"/>
+   <property name="skf.jars" value="lib/skf.jar"/>
+   <property name="ext.jars" value="${skf.jars};${rti.jars}"/>
+
+   <target name="build" description="Build Lunar Rover Federate."
+           depends="compile,jar" />
+
+   <target name="main" description="Build Lunar Rover Federate."
+           depends="compile,jar" />
+
+   <target name="compile">
+      <mkdir dir="bin"/>
+      <javac srcdir="${build.src}" destdir="${build.bin}" debug="${debug}">
+          <classpath path="${build.bin};${ext.jars};${java.class.path}"/>
+      </javac>
+   </target>
+
+   <target name="jar" depends="compile">
+      <mkdir dir="dist"/>
+      <mkdir dir="lib"/>
+      <copy todir="dist">
+	      <fileset dir="bin"/>
+      </copy>
+      <jar jarfile="lib/LunarRover.jar" basedir="dist"/>
+      <delete dir="dist"/>
+   </target>
+
+   <target name="clean"
+           description="Remove all generated files.">
+      <delete dir="dist" />
+      <delete dir="bin" />
+      <delete file="lib/LunarRover.jar" />
+   </target>
+
+</project>

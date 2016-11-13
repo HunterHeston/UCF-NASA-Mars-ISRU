@@ -62,7 +62,8 @@ public class LunarRoverFederate extends SEEAbstractFederate implements Observer 
     *For MAK local_settings_designator = "";
     *For PITCH local_settings_designator = "crcHost=" + <crc_host> + "\ncrcPort=" + <crc_port>;
     */
-    local_settings_designator = "crcHost="+config.getCrcHost()+"\ncrcPort="+config.getCrcPort();
+    //local_settings_designator = "crcHost="+config.getCrcHost()+"\ncrcPort="+config.getCrcPort();
+    local_settings_designator = "";
 		super.connectOnRTI(local_settings_designator);
 
 		// 3. The Federate joins into the Federation execution

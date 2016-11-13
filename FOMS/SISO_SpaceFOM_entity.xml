@@ -24,11 +24,6 @@
             <pocTelephone>418-650-3493 ext 6000</pocTelephone>
             <pocEmail>dverret@forwardsim.com</pocEmail>
         </poc>
-        <poc>
-            <pocType></pocType>
-            <pocName></pocName>
-            <pocOrg></pocOrg>
-        </poc>
         <other></other>
     </modelIdentification>
     <objects>

@@ -67,6 +67,7 @@ class EnvironmentHLA {
 	// Define the FOM modules.
 	private static final File coreFile = new File("../../../FOMs/SISO_SpaceFOM_core.xml");
 	private static final File environFile = new File("../../../FOMs/SISO_SpaceFOM_environ.xml");
+	private static final File entityFile = new File("../../../FOMs/SISO_SpaceFOM_entity.xml");
 	private static URL[] FOM_MODULES;
 
 	// Environment default constructor
@@ -197,7 +198,7 @@ class EnvironmentHLA {
 	public void configure() {
 		// Specify the FOM location.
 		try {
-			FOM_MODULES = new URL[] { coreFile.toURI().toURL(), environFile.toURI().toURL() };
+			FOM_MODULES = new URL[] { coreFile.toURI().toURL(), environFile.toURI().toURL(), entityFile.toURI().toURL() };
 		} catch (Exception ignore) {
 		}
 
