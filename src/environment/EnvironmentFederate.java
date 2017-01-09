@@ -28,7 +28,7 @@ public class EnvironmentFederate extends SEEAbstractFederate implements Observer
         this.gridHeight = gridHeight;
         this.gridWidth = gridWidth;
 
-        this.grid = new EnvironmentGrid(this);
+        this.grid = new EnvironmentGrid(this.gridWidth, this.gridHeight);
     }
 
     @Override

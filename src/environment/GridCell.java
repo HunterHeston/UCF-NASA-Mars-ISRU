@@ -7,14 +7,12 @@ public class GridCell {
 
     public boolean blocked;
     public int gridX, gridY, collisionRadiusOverlap;
-    public EnvironmentGrid grid;
     public Long hlaID;
 
-    public GridCell(int gridX, int gridY, EnvironmentGrid grid) {
+    public GridCell(int gridX, int gridY) {
         this.collisionRadiusOverlap = 0;
         this.gridX = gridX;
         this.gridY = gridY;
-        this.grid = grid;
 
         this.hlaID = null;
         this.blocked = false;
@@ -26,6 +24,10 @@ public class GridCell {
 
     public boolean isOccupied() {
         return this.hlaID != null;
+    }
+
+    public String toString() {
+        return "Cell: (" + this.gridX + "," + this.gridY + "): B=" + this.isBlocked() + " O=" + this.isOccupied();
     }
 
 }

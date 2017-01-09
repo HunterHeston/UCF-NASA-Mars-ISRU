@@ -1,5 +1,6 @@
 package environment;
 
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -10,8 +11,9 @@ public class EnvironmentGrid {
     public ConcurrentHashMap<Long, GridCell> entityToGridCellMap;
     public ConcurrentHashMap<Long, Integer> entityToCollisionRadiusMap;
 
-    public EnvironmentFederate environmentFederate;
     public GridCell[][] gridArray;
+
+    public int gridWidth, gridHeight;
 
     public class PlacementException extends Exception {
         public PlacementException(String m) {
@@ -20,16 +22,18 @@ public class EnvironmentGrid {
     }
 
     /**
-     *
-     * @param environmentFederate
+     * @param gridWidth
+     * @param gridHeight
      */
-    public EnvironmentGrid(EnvironmentFederate environmentFederate) {
-        this.environmentFederate = environmentFederate;
-        this.gridArray = new GridCell[this.environmentFederate.gridHeight][this.environmentFederate.gridWidth];
+    public EnvironmentGrid(int gridWidth, int gridHeight) {
+        this.gridWidth = gridWidth;
+        this.gridHeight = gridHeight;
 
-        for(int i=0; i < this.environmentFederate.gridHeight; i++) {
-            for(int j=0; j < this.environmentFederate.gridWidth; j++) {
-                this.gridArray[i][j] = new GridCell(j, i, this);
+        this.gridArray = new GridCell[this.gridHeight][this.gridWidth];
+
+        for(int i=0; i < this.gridHeight; i++) {
+            for(int j=0; j < this.gridWidth; j++) {
+                this.gridArray[i][j] = new GridCell(j, i);
             }
         }
 
@@ -38,7 +42,7 @@ public class EnvironmentGrid {
     }
 
     /**
-     * 
+     *
      * @param hlaID
      * @param targetX
      * @param targetY
@@ -51,9 +55,9 @@ public class EnvironmentGrid {
             throw new PlacementException("Entity with id " + hlaID + " already exists in grid");
         }
 
-        if(targetX < 0 || targetX >= this.environmentFederate.gridWidth || targetY < 0 || targetY >= this.environmentFederate.gridHeight) {
+        if(targetX < 0 || targetX >= this.gridWidth || targetY < 0 || targetY >= this.gridHeight) {
             throw new PlacementException("Placement indices out of bounds (" + targetX + "," + targetY + " vs ("
-                                        + this.environmentFederate.gridWidth + "," + this.environmentFederate.gridHeight + ")");
+                                        + this.gridWidth + "," + this.gridHeight + ")");
         }
 
         GridCell cell = this.gridArray[targetY][targetX];
@@ -83,13 +87,39 @@ public class EnvironmentGrid {
                 int collisionX = targetX+i;
                 int collisionY = targetY+j;
 
-                if(collisionX < 0 || collisionX >= this.environmentFederate.gridWidth || collisionY < 0 || collisionY >= this.environmentFederate.gridHeight) {
+                if(collisionX < 0 || collisionX >= this.gridWidth || collisionY < 0 || collisionY >= this.gridHeight) {
                     continue;
                 }
 
                 this.gridArray[collisionY][collisionX].collisionRadiusOverlap += decrement ? -1 : 1;
             }
         }
+    }
+
+    public List<GridCell> findPath(GridCell start, GridCell finish) {
+        ArrayList<GridCell> path = new ArrayList<>();
+
+        boolean[][] visitedNodes = new boolean[this.gridHeight][this.gridWidth];
+        Arrays.fill(visitedNodes, false);
+
+        Set<GridCell> openCells = new HashSet<>();
+        openCells.add(start);
+
+        int[][] gScore = new int[this.gridHeight][this.gridWidth];
+        Arrays.fill(gScore, -1);
+
+        gScore[start.gridY][start.gridX] = 0;
+
+        int[][] fScore = new int[this.gridHeight][this.gridWidth];
+        Arrays.fill(fScore, -1);
+
+        fScore[start.gridY][start.gridX] = (int)Math.abs(Math.sqrt(Math.pow((double)finish.gridX-start.gridX, 2.0) + Math.pow((double)finish.gridY-start.gridY, 2.0)));
+
+        while(!openCells.isEmpty()) {
+
+        }
+
+        return path;
     }
 
     /**
@@ -99,8 +129,8 @@ public class EnvironmentGrid {
     public String debugPrintGrid() {
         StringBuilder sb = new StringBuilder();
 
-        for(int i=0; i < this.environmentFederate.gridHeight; i++) {
-            for(int j=0; j < this.environmentFederate.gridWidth; j++) {
+        for(int i=0; i < this.gridHeight; i++) {
+            for(int j=0; j < this.gridWidth; j++) {
                 GridCell cell = this.gridArray[i][j];
                 sb.append("(" + cell.gridX + "," + cell.gridY + ")");
 

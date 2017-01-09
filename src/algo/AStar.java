@@ -1,0 +1,164 @@
+package algo;
+
+import environment.GridCell;
+import org.apache.log4j.Logger;
+
+import java.util.*;
+
+/**
+ * Created by Andrew on 1/4/2017.
+ */
+public class AStar {
+    final static Logger logger = Logger.getLogger(AStarTest.class);
+
+    private static class Node {
+        private static final int INIT_SCORE = Integer.MAX_VALUE;
+
+        public Object object;
+        public List<Node> neighbors;
+        public int score = INIT_SCORE;
+        public int fScore = INIT_SCORE;
+
+        public Node(Object object) {
+            this.object = object;
+            this.neighbors = new ArrayList<>();
+        }
+
+        public Node(List<Node> neighbors, Object object) {
+            this.neighbors = neighbors;
+            this.object = object;
+        }
+
+        public String toString() {
+            return this.object + ": S=" + this.score + " FS=" + this.fScore;
+        }
+    }
+
+    public static List<Node> reconstructPath(HashMap<Node, Node> cameFrom, Node current) {
+        List<Node> path = new ArrayList<Node>();
+        path.add(current);
+
+        while(cameFrom.containsKey(current)) {
+            current = cameFrom.get(current);
+            path.add(current);
+        }
+
+        return path;
+    }
+
+    public static List<GridCell> pathFromGrid(GridCell[][] grid, GridCell start, GridCell end) {
+        Node[][] nodeGrid = new Node[grid.length][grid[0].length];
+
+        for(int i=0; i < grid.length; i++) {
+            for(int j=0; j<grid[0].length; j++) {
+                nodeGrid[i][j] = new Node(grid[i][j]);
+            }
+        }
+
+        Node current;
+        Node startNode = nodeGrid[start.gridY][start.gridX];
+        Node endNode = nodeGrid[end.gridY][end.gridX];
+
+        startNode.score = 0;
+        endNode.fScore = (int)Math.abs(Math.sqrt(Math.pow((double)end.gridX-start.gridX, 2.0) + Math.pow((double)end.gridY-start.gridY, 2.0)));
+
+        // Traversal map
+        HashMap<Node, Node> cameFrom = new HashMap<>();
+
+        //  Closed Nodes
+        HashSet<Node> closedSet = new HashSet<>();
+
+        //  Reachable, but unexplored
+        HashSet<Node> openSet = new HashSet<>();
+
+        //  Queue of f-Scores (Hueristic), should be 1-1 with openset
+        PriorityQueue<Node> fScoreQueue = new PriorityQueue<>((o1, o2) -> o1.fScore < o2.fScore ? -1 : o1.fScore > o2.fScore ? 1 : 0);
+
+        //  Starting node is reachable, but unexplored, also add to the fScoreQueue
+        fScoreQueue.add(startNode);
+        openSet.add(startNode);
+
+        //  ArrayList of neighbors to fill with grid Neighbors
+        ArrayList<Node> neighbors = new ArrayList<>();
+
+        while(!openSet.isEmpty()) {
+            //  Closest node when considering the hueristic that is reachable, but unexplored
+            current = fScoreQueue.peek();
+
+            //  End
+            if(current == endNode) {
+                List<Node> nodePath = reconstructPath(cameFrom, current);
+                List<GridCell> cellPath = new ArrayList<>();
+                for(Node n : nodePath) {
+                    cellPath.add((GridCell) n.object);
+                }
+
+                return cellPath;
+            }
+
+            //  This node is being explored
+            fScoreQueue.poll();
+            openSet.remove(current);
+            closedSet.add(current);
+
+            //  Fill the neighbors array
+            getNeighborsFromGrid(current, nodeGrid, neighbors);
+
+            for(Node neighbor : neighbors) {
+                //  This node is already explored
+                if(closedSet.contains(neighbor)) continue;
+
+                //  +1 Used for the cost of traversal
+                int tentScore = current.score + 1;
+
+                //  Newly discovered neighbor
+                if(!openSet.contains(neighbor)) {
+                    openSet.add(neighbor);
+                    fScoreQueue.add(neighbor);
+                } else if(tentScore >= current.score) continue;
+
+                //  Track the traversal
+                cameFrom.put(neighbor, current);
+
+                //  Update the fScore
+                GridCell cellNeighbor = (GridCell) neighbor.object;
+                neighbor.score = tentScore;
+                neighbor.fScore = neighbor.score + (int)Math.abs(Math.sqrt(Math.pow((double)end.gridX-cellNeighbor.gridX, 2.0) + Math.pow((double)end.gridY-cellNeighbor.gridY, 2.0)));
+
+                fScoreQueue.remove(neighbor);
+                fScoreQueue.add(neighbor);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     *  Fill dest with neighbor nodes from the grid
+     *
+     * @param current
+     * @param nodeGrid
+     * @param dest
+     */
+    private static void getNeighborsFromGrid(Node current, Node[][] nodeGrid, ArrayList<Node> dest) {
+        dest.clear();
+
+        int is = Math.max(0, ((GridCell)current.object).gridY-1);
+        int js = Math.max(0, ((GridCell)current.object).gridX-1);
+
+        int ie = Math.min(nodeGrid.length-1, ((GridCell)current.object).gridY+1);
+        int je = Math.min(nodeGrid[0].length-1, ((GridCell)current.object).gridX+1);
+
+        for(int i=is; i<=ie; i++) {
+            for(int j=js; j<=je; j++) {
+                Node n = nodeGrid[i][j];
+                if(n == current) continue;
+
+                GridCell c = (GridCell) n.object;
+                if(!c.isBlocked() && !c.isOccupied()) {
+                    dest.add(n);
+                }
+            }
+        }
+    }
+}
