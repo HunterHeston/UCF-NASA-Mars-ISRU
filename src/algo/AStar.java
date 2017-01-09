@@ -9,7 +9,7 @@ import java.util.*;
  * Created by Andrew on 1/4/2017.
  */
 public class AStar {
-    final static Logger logger = Logger.getLogger(AStarTest.class);
+    final static Logger logger = Logger.getLogger(AStar.class);
 
     private static class Node {
         private static final int INIT_SCORE = Integer.MAX_VALUE;

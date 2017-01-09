@@ -7,23 +7,23 @@ public class GridCell {
 
     public boolean blocked;
     public int gridX, gridY, collisionRadiusOverlap;
-    public Long hlaID;
+    public long hlaID;
 
     public GridCell(int gridX, int gridY) {
         this.collisionRadiusOverlap = 0;
         this.gridX = gridX;
         this.gridY = gridY;
 
-        this.hlaID = null;
+        this.hlaID = Integer.MAX_VALUE;
         this.blocked = false;
     }
 
     public boolean isBlocked() {
-        return this.blocked || this.collisionRadiusOverlap > 0;
+        return this.blocked;
     }
 
     public boolean isOccupied() {
-        return this.hlaID != null;
+        return this.hlaID != Integer.MAX_VALUE || this.collisionRadiusOverlap > 0;
     }
 
     public String toString() {

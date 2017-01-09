@@ -33,7 +33,7 @@ public class EnvironmentFederate extends SEEAbstractFederate implements Observer
 
     @Override
     protected void doAction() {
-        System.out.println(this.grid.debugPrintGrid());
+        EnvironmentGrid.printGrid(this.grid.gridArray);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class EnvironmentFederate extends SEEAbstractFederate implements Observer
 
     }
 
-    protected void doPlaceEntity(long hlaID, int targetX, int targetY, int collisionRadius) {
+    protected void doPlaceEntity(int hlaID, int targetX, int targetY, int collisionRadius) {
         try {
             boolean success = this.grid.placeEntity(hlaID, targetX, targetY, collisionRadius);
             if(success) {

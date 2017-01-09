@@ -1,5 +1,7 @@
 package environment;
 
+import org.apache.log4j.Logger;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -7,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by Andrew on 1/1/2017.
  */
 public class EnvironmentGrid {
+    final static Logger logger = Logger.getLogger(EnvironmentGrid.class);
 
     public ConcurrentHashMap<Long, GridCell> entityToGridCellMap;
     public ConcurrentHashMap<Long, Integer> entityToCollisionRadiusMap;
@@ -48,10 +51,11 @@ public class EnvironmentGrid {
      * @param targetY
      * @param collisionRadius
      * @return
+     * @return
      * @throws PlacementException
      */
     public boolean placeEntity(long hlaID, int targetX, int targetY, int collisionRadius) throws PlacementException {
-        if(entityToGridCellMap.contains(hlaID)) {
+        if(entityToGridCellMap.containsKey(hlaID)) {
             throw new PlacementException("Entity with id " + hlaID + " already exists in grid");
         }
 
@@ -61,6 +65,12 @@ public class EnvironmentGrid {
         }
 
         GridCell cell = this.gridArray[targetY][targetX];
+
+        //  Make sure the cell is open
+        if(this.hasCollisionsWithinRadius(collisionRadius, targetX, targetY)) {
+            throw new PlacementException("Occupied Cell: " + cell);
+        }
+
         cell.hlaID = hlaID;
 
         this.entityToGridCellMap.put(hlaID, cell);
@@ -96,6 +106,35 @@ public class EnvironmentGrid {
         }
     }
 
+    public boolean hasCollisionsWithinRadius(int collisionRadius, int targetX, int targetY) {
+        collisionRadius -= 1;
+
+        if(collisionRadius == 0) {
+            GridCell cell = this.gridArray[targetY][targetX];
+            return cell.isBlocked() || cell.isOccupied();
+        }
+
+        for(int i=-collisionRadius; i<=collisionRadius; i++) {
+            for(int j=-collisionRadius; j<=collisionRadius; j++) {
+                int collisionX = targetX+i;
+                int collisionY = targetY+j;
+
+                if(collisionX < 0 || collisionX >= this.gridWidth || collisionY < 0 || collisionY >= this.gridHeight) {
+                    continue;
+                }
+
+                GridCell cell = this.gridArray[collisionY][collisionX];
+                if(cell.isOccupied() || cell.isBlocked()) {
+                    return true;
+                }
+
+            }
+        }
+
+        return false;
+    }
+
+
     public List<GridCell> findPath(GridCell start, GridCell finish) {
         ArrayList<GridCell> path = new ArrayList<>();
 
@@ -122,26 +161,43 @@ public class EnvironmentGrid {
         return path;
     }
 
+    public static void printGrid(GridCell[][] grid) {
+        printGridWithPath(grid, null, null, null);
+    }
+
     /**
      *
      * @return
      */
-    public String debugPrintGrid() {
-        StringBuilder sb = new StringBuilder();
+    public static void printGridWithPath(GridCell[][] grid, List<GridCell> path, GridCell start, GridCell end) {
+        Set<GridCell> pathSet = new HashSet<>();
 
-        for(int i=0; i < this.gridHeight; i++) {
-            for(int j=0; j < this.gridWidth; j++) {
-                GridCell cell = this.gridArray[i][j];
-                sb.append("(" + cell.gridX + "," + cell.gridY + ")");
-
-                char a = cell.isBlocked() ? 'B' : (cell.isOccupied() ? 'E' : ' ');
-                sb.append("{" + a + "}|");
-            }
-
-            sb.append("\n");
+        if(path!=null) {
+            pathSet.addAll(path);
         }
 
-        return sb.toString();
+        for(int i = 0; i < grid.length; i++) {
+            StringBuilder sb = new StringBuilder();
+
+            for(int j = 0; j < grid[0].length; j++) {
+                GridCell cell = grid[i][j];
+                if(cell.isBlocked()) {
+                    sb.append("B ");
+                } else if (cell.isOccupied()) {
+                    sb.append("E ");
+                } else if(cell == start) {
+                    sb.append("S ");
+                } else if(cell == end) {
+                    sb.append("E ");
+                } else if(pathSet.contains(cell)){
+                    sb.append("X ");
+                } else {
+                    sb.append("_ ");
+                }
+            }
+
+            logger.debug(sb);
+        }
     }
 
 }
