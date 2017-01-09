@@ -1,0 +1,9 @@
+Name: siso/smackdown/environment
+Specification-Title: SEE Smackdown Environment Federate
+Specification-Version: 2015
+Specification-Vendor: Edwin Z. Crues
+Implementation-Title: Environment Federate
+Implementation-Version: 0.1
+Implementation-Vendor: Edwin Z. Crues
+Main-Class: see.smackdown.environment.Environment
+Class-Path: rti1516e.jar
