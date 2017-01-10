@@ -17,7 +17,7 @@ public class SimulationEntity {
         GridMovement,
     }
 
-    public class GridIndex {
+    public static class GridIndex {
         public int row, col;
 
         public GridIndex(int row, int col) {
@@ -34,6 +34,11 @@ public class SimulationEntity {
 
             return this.row == oo.row && this.col == oo.col;
         }
+
+        @Override
+        public String toString() {
+            return "[" + this.row + "," + this.col + "]";
+        }
     }
 
     public MovementState movementState = MovementState.Stopped;
@@ -46,10 +51,10 @@ public class SimulationEntity {
         this.gridIndex = new GridIndex(gridX, gridY);
     }
 
-    public void beginPathFinding(int gridX, int gridY) {
+    public void beginPathFinding(int gridX, int gridY) throws Exception {
         assert this.movementState == MovementState.Stopped;
+        assert this.gridIndex.row != gridY && this.gridIndex.col != gridX;
 
-        this.targetGridIndex = new GridIndex(gridX, gridY);
         this.movementState = MovementState.PathFinding;
         logger.debug("State transition: Stopped -> Pathfinding");
     }
@@ -80,7 +85,6 @@ public class SimulationEntity {
 
     public void walkPath() {
         assert this.movementState == MovementState.GridMovement;
-        assert this.gridIndex == this.targetGridIndex;
 
         this.gridIndex = this.targetGridIndex;
         this.targetGridIndex = path.poll();
@@ -90,5 +94,4 @@ public class SimulationEntity {
             logger.debug("State transition: GridMovement -> Stopped");
         }
     }
-
 }
