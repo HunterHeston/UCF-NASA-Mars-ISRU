@@ -51,7 +51,7 @@ public class SimulationEntity {
         this.gridIndex = new GridIndex(gridX, gridY);
     }
 
-    public void beginPathFinding(int gridX, int gridY) throws Exception {
+    public void beginPathFinding(int gridX, int gridY) {
         assert this.movementState == MovementState.Stopped;
         assert this.gridIndex.row != gridY && this.gridIndex.col != gridX;
 
