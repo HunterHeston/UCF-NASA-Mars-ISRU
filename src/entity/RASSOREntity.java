@@ -1,0 +1,12 @@
+package entity;
+
+/**
+ * Created by Hunter on 1/12/2017.
+ */
+public class RASSOREntity {
+
+
+    //change    
+
+
+}
