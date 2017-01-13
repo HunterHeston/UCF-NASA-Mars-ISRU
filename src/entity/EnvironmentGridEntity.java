@@ -1,7 +1,6 @@
 package entity;
 
 import algo.AStar;
-import com.bluecatcode.junit.shaded.org.apache.commons.lang3.ArrayUtils;
 import environment.GridCell;
 import org.apache.log4j.Logger;
 
@@ -88,11 +87,9 @@ public class EnvironmentGridEntity {
                                              new int[] {finish.gridY, finish.gridX});
 
         if(!path.isEmpty()) {
-            GridCell[] pathArray = Arrays.copyOf(path.toArray(), path.size(), GridCell[].class);
-            ArrayUtils.reverse(pathArray);
-            GridCell[] finalPathArray = Arrays.copyOfRange(pathArray, 1, pathArray.length);
-
-            return finalPathArray;
+            Collections.reverse(path);
+            GridCell[] pathArray = Arrays.copyOfRange(path.toArray(), 1, path.size(), GridCell[].class);
+            return pathArray;
         }
 
         return null;
