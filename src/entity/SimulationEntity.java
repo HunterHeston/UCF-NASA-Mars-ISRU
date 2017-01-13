@@ -16,10 +16,9 @@ public class SimulationEntity {
         PathFinding,
         GridMovement,
     }
-
     public static class GridIndex {
-        public int row, col;
 
+        public int row, col;
         public GridIndex(int row, int col) {
             this.row = row;
             this.col = col;
@@ -39,16 +38,33 @@ public class SimulationEntity {
         public String toString() {
             return "[" + this.row + "," + this.col + "]";
         }
+
     }
-
     public MovementState movementState = MovementState.Stopped;
-    public GridIndex gridIndex;
 
+    public GridIndex gridIndex;
     public GridIndex targetGridIndex;
+
     public Queue<GridIndex> path;
+    public double movementSpeed;
+    public double gridCellSize;
+
+    public double[] position;
 
     public SimulationEntity(int gridX, int gridY) {
         this.gridIndex = new GridIndex(gridX, gridY);
+        this.movementSpeed = 0;
+        this.gridCellSize = 1.0;
+
+        this.position = new double[3];
+        this.position[0] = gridX * this.gridCellSize;
+        this.position[1] = gridY * this.gridCellSize;
+    }
+
+    public SimulationEntity(int gridX, int gridY, double movementSpeed, double gridCellSize) {
+        this(gridX, gridY);
+        this.movementSpeed = movementSpeed;
+        this.gridCellSize = gridCellSize;
     }
 
     public void beginPathFinding(int gridX, int gridY) {
@@ -83,15 +99,76 @@ public class SimulationEntity {
         logger.debug("State transition: InMotion -> GridMovement");
     }
 
-    public void walkPath() {
+    public void gridMovementResponse(boolean success) {
         assert this.movementState == MovementState.GridMovement;
 
-        this.gridIndex = this.targetGridIndex;
-        this.targetGridIndex = path.poll();
-
-        if(this.targetGridIndex == null) {
-            this.movementState = MovementState.Stopped;
-            logger.debug("State transition: GridMovement -> Stopped");
+        if(success) {
+            continueTransit();
+        } else {
+            stopTransit();
         }
+    }
+
+    public void continueTransit() {
+        assert this.movementState == MovementState.GridMovement;
+        assert path != null && !path.isEmpty();
+        assert this.targetGridIndex != null;
+
+        this.targetGridIndex = path.poll();
+        this.movementState = MovementState.InMotion;
+        logger.debug("State transition GridMovement -> InMotion");
+    }
+
+    public void stopTransit() {
+        this.targetGridIndex = null;
+        this.path.clear();
+
+        this.movementState = MovementState.Stopped;
+        logger.debug("State transition GridMovement -> Stopped");
+    }
+
+    //  Returns true when we have arrived at target
+    public boolean moveTowardsTarget() {
+        assert this.movementState == MovementState.InMotion;
+        assert this.targetGridIndex != null;
+
+        //  TODO: Convert to 3D
+        double ux, uy, dx, dy, l;
+
+        //  Vector length from gridIndex to targetGridIndex
+        l = Math.sqrt(Math.pow(targetGridIndex.col-gridIndex.col, 2) + Math.pow(targetGridIndex.row-gridIndex.row, 2));
+
+        //  Unit vector components from gridIndex to targetGridIndex
+        ux = ((double)targetGridIndex.col-gridIndex.col) / l;
+        uy = ((double)targetGridIndex.row-gridIndex.row) / l;
+
+        dx = ux * this.movementSpeed;
+        dy = uy * this.movementSpeed;
+
+        double actX, actY, targetGridX, targetGridY;
+
+        //  New positions
+        actX = this.position[0] + dx;
+        actY = this.position[1] + dy;
+
+        //  Target position
+        targetGridX = targetGridIndex.col * this.gridCellSize;
+        targetGridY = targetGridIndex.row * this.gridCellSize;
+
+        //  Make sure we only move to the target at most
+        actX = (dx > 0 && actX >= targetGridX) || (dx < 0 && actX <= targetGridX) ? targetGridX : actX;
+        actY = (dy > 0 && actY >= targetGridY) || (dy < 0 && actY <= targetGridY) ? targetGridY : actY;
+
+        //  Update our pos vector
+        this.position[0] = actX;
+        this.position[1] = actY;
+
+        //  Return true when we have arrived
+        if(actX == targetGridX && actY == targetGridY) {
+            this.gridIndex = this.targetGridIndex;
+            return true;
+        }
+
+        return false;
     }
 }
