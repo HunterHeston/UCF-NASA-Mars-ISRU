@@ -55,6 +55,67 @@ public class IPFFederate extends SEEAbstractFederate implements Observer {
 	protected void doAction() {
 		// TODO Auto-generated method stub
 		
+		switch(ipf.chargeState){
+		case NULL:
+			break;
+		case NoPorts:
+			break;
+		case OpenPorts:
+			break;
+		default:
+			break;
+		}
+		
+		switch(ipf.regolithState){
+		case Depositing:
+			break;
+		case Loading:
+			break;
+		case NULL:
+			break;
+		case Processing:
+			break;
+		case ProcessingAndWaitingForDeposit:
+			break;
+		case WaitingForDeposit:
+			break;
+		case WaitingForLoad:
+			break;
+		default:
+			break;
+		}
+		
+		switch(ipf.processingState){
+		case HaveRegolith:
+			break;
+		case HaveResources:
+			break;
+		case HaveWater:
+			break;
+		case NULL:
+			break;
+		case NeedCarbonDioxide:
+			break;
+		case NeedHydrogen:
+			break;
+		case NeedHydrogenAndCarbonDioxide:
+			break;
+		case NeedRegolith:
+			break;
+		case NeedResources:
+			break;
+		case NeedWater:
+			break;
+		case StorageFull:
+			break;
+		case StorageNotFull:
+			break;
+		case WaitingForRegolith:
+			break;
+		default:
+			break;
+		}
+		
 		try {
 			super.updateElement(this.ipf);
 		} catch (FederateNotExecutionMember | NotConnected | AttributeNotOwned | AttributeNotDefined
