@@ -8,7 +8,7 @@ import java.util.*;
 /**
  * Created by Andrew on 1/4/2017.
  */
-public class AStar {
+public class AStar<T extends Object> {
     final static Logger logger = Logger.getLogger(AStar.class);
 
     private static class Node {
@@ -46,7 +46,7 @@ public class AStar {
         return path;
     }
 
-    public static List<GridCell> pathFromGrid(GridCell[][] grid, GridCell start, GridCell end) {
+    public List<T> pathFromGrid(T[][] grid, int[] start, int[] end) {
         Node[][] nodeGrid = new Node[grid.length][grid[0].length];
 
         for(int i=0; i < grid.length; i++) {
@@ -56,11 +56,11 @@ public class AStar {
         }
 
         Node current;
-        Node startNode = nodeGrid[start.gridY][start.gridX];
-        Node endNode = nodeGrid[end.gridY][end.gridX];
+        Node startNode = nodeGrid[start[0]][start[1]];
+        Node endNode = nodeGrid[end[0]][end[1]];
 
         startNode.score = 0;
-        endNode.fScore = (int)Math.abs(Math.sqrt(Math.pow((double)end.gridX-start.gridX, 2.0) + Math.pow((double)end.gridY-start.gridY, 2.0)));
+        endNode.fScore = (int)Math.abs(Math.sqrt(Math.pow((double)end[0]-start[0], 2.0) + Math.pow((double)end[1]-start[1], 2.0)));
 
         // Traversal map
         HashMap<Node, Node> cameFrom = new HashMap<>();
@@ -88,9 +88,9 @@ public class AStar {
             //  End
             if(current == endNode) {
                 List<Node> nodePath = reconstructPath(cameFrom, current);
-                List<GridCell> cellPath = new ArrayList<>();
+                List<T> cellPath = new ArrayList<>();
                 for(Node n : nodePath) {
-                    cellPath.add((GridCell) n.object);
+                    cellPath.add((T) n.object);
                 }
 
                 return cellPath;
@@ -123,7 +123,7 @@ public class AStar {
                 //  Update the fScore
                 GridCell cellNeighbor = (GridCell) neighbor.object;
                 neighbor.score = tentScore;
-                neighbor.fScore = neighbor.score + (int)Math.abs(Math.sqrt(Math.pow((double)end.gridX-cellNeighbor.gridX, 2.0) + Math.pow((double)end.gridY-cellNeighbor.gridY, 2.0)));
+                neighbor.fScore = neighbor.score + (int)Math.abs(Math.sqrt(Math.pow((double)end[0]-cellNeighbor.gridX, 2.0) + Math.pow((double)end[1]-cellNeighbor.gridY, 2.0)));
 
                 fScoreQueue.remove(neighbor);
                 fScoreQueue.add(neighbor);

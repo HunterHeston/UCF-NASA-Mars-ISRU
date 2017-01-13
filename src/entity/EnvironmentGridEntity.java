@@ -1,5 +1,6 @@
 package entity;
 
+import algo.AStar;
 import environment.GridCell;
 import org.apache.log4j.Logger;
 
@@ -60,10 +61,7 @@ public class EnvironmentGridEntity {
             throw new PlacementException("Entity with id " + hlaID + " already exists in grid");
         }
 
-        if(targetX < 0 || targetX >= this.gridWidth || targetY < 0 || targetY >= this.gridHeight) {
-            throw new PlacementException("Placement indices out of bounds (" + targetX + "," + targetY + " vs ("
-                                        + this.gridWidth + "," + this.gridHeight + ")");
-        }
+        checkGridIndex(targetX, targetY);
 
         GridCell cell = this.gridArray[targetY][targetX];
 
@@ -78,6 +76,40 @@ public class EnvironmentGridEntity {
         this.entityToCollisionRadiusMap.put(hlaID, collisionRadius);
         this.applyCollisions(collisionRadius, targetX, targetY, false);
 
+        return true;
+    }
+
+    public List<GridCell> findPath(GridCell start, GridCell finish) {
+        AStar a = new AStar<GridCell>();
+
+        List<GridCell> path = a.pathFromGrid(this.gridArray,
+                                             new int[] {start.gridY, start.gridX},
+                                             new int[] {finish.gridY, finish.gridX});
+
+        return path;
+    }
+
+    public boolean gridMove(long hlaID, int targetX, int targetY) throws PlacementException {
+        GridCell cell = entityToGridCellMap.get(hlaID);
+        if(cell == null) {
+            logger.error("hlaID=" + hlaID + " Not found in gridMove");
+            return false;
+        }
+
+        checkGridIndex(targetX, targetY);
+        GridCell target = this.gridArray[targetY][targetX];
+
+        int collisionRadius = entityToCollisionRadiusMap.get(hlaID);
+        applyCollisions(collisionRadius, cell.gridX, cell.gridY, true);
+
+        //  Thread danger here, applyCollisions changes shared memory.....
+        if(hasCollisionsWithinRadius(collisionRadius, targetX, targetY)) {
+            applyCollisions(collisionRadius, cell.gridX, cell.gridY, false);
+            return false;
+        }
+
+        cell.removeEntity();
+        target.placeEntity(hlaID);
         return true;
     }
 
@@ -135,33 +167,6 @@ public class EnvironmentGridEntity {
         return false;
     }
 
-
-    public List<GridCell> findPath(GridCell start, GridCell finish) {
-        ArrayList<GridCell> path = new ArrayList<>();
-
-        boolean[][] visitedNodes = new boolean[this.gridHeight][this.gridWidth];
-        Arrays.fill(visitedNodes, false);
-
-        Set<GridCell> openCells = new HashSet<>();
-        openCells.add(start);
-
-        int[][] gScore = new int[this.gridHeight][this.gridWidth];
-        Arrays.fill(gScore, -1);
-
-        gScore[start.gridY][start.gridX] = 0;
-
-        int[][] fScore = new int[this.gridHeight][this.gridWidth];
-        Arrays.fill(fScore, -1);
-
-        fScore[start.gridY][start.gridX] = (int)Math.abs(Math.sqrt(Math.pow((double)finish.gridX-start.gridX, 2.0) + Math.pow((double)finish.gridY-start.gridY, 2.0)));
-
-        while(!openCells.isEmpty()) {
-
-        }
-
-        return path;
-    }
-
     public static void printGrid(GridCell[][] grid) {
         printGridWithPath(grid, null, null, null);
     }
@@ -198,6 +203,13 @@ public class EnvironmentGridEntity {
             }
 
             logger.debug(sb);
+        }
+    }
+
+    public void checkGridIndex(int targetX, int targetY) throws PlacementException {
+        if(targetX < 0 || targetX >= this.gridWidth || targetY < 0 || targetY >= this.gridHeight) {
+            throw new PlacementException("Placement indices out of bounds (" + targetX + "," + targetY + " vs ("
+                    + this.gridWidth + "," + this.gridHeight + ")");
         }
     }
 

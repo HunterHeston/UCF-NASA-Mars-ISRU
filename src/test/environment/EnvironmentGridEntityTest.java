@@ -2,8 +2,11 @@ package test.environment;
 
 import entity.EnvironmentGridEntity;
 import environment.EnvironmentGridFactory;
+import environment.GridCell;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import java.util.List;
 
 
 /**
@@ -90,17 +93,43 @@ public class EnvironmentGridEntityTest {
     }
 
     @Test
-    public void applyCollisions() throws Exception {
-
-    }
-
-    @Test
     public void findPath() throws Exception {
+        String[] gridSource = {
+                "_ _ _ _ _ _ _ _ _ _ ",
+                "_ _ _ _ _ _ _ _ _ _ ",
+                "B B _ _ _ _ _ _ _ _ ",
+                "_ _ _ _ _ _ _ _ _ _ ",
+                "_ _ _ _ _ _ _ _ _ _ ",
+                "_ _ _ _ _ _ _ _ _ _ ",
+                "_ _ _ _ _ _ _ _ _ _ ",
+                "_ _ _ _ _ _ _ _ _ _ ",
+                "_ _ _ _ _ _ _ _ _ _ ",
+        };
 
-    }
+        EnvironmentGridEntity grid = EnvironmentGridFactory.gridFromTXT(gridSource);
 
-    @Test
-    public void debugPrintGrid() throws Exception {
+        GridCell start = grid.gridArray[0][0];
+        GridCell end   = grid.gridArray[3][0];
+
+        List<GridCell> path = grid.findPath(start, end);
+
+        assert path.get(0).gridX == 0;
+        assert path.get(0).gridY == 1;
+
+        assert path.get(1).gridX == 1;
+        assert path.get(1).gridY == 1;
+
+        assert path.get(2).gridX == 2;
+        assert path.get(2).gridY == 1;
+
+        assert path.get(3).gridX == 2;
+        assert path.get(3).gridY == 2;
+
+        assert path.get(4).gridX == 1;
+        assert path.get(4).gridY == 3;
+
+        assert path.get(5).gridX == 3;
+        assert path.get(5).gridY == 0;
 
     }
 

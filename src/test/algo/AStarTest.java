@@ -68,7 +68,11 @@ public class AStarTest {
         assert start != null;
         assert end != null;
 
-        List<GridCell> path = AStar.pathFromGrid(grid, start, end);
+        AStar<GridCell> a = new AStar<>();
+        List<GridCell> path = a.pathFromGrid(grid,
+                new int[] {start.gridY, start.gridX},
+                new int[] {end.gridY, end.gridX});
+
         assert path == null;
 
         printGridWithPath(grid, path, start, end);
@@ -128,7 +132,11 @@ public class AStarTest {
         assert start != null;
         assert end != null;
 
-        List<GridCell> path = AStar.pathFromGrid(grid, start, end);
+        AStar<GridCell> a = new AStar<>();
+        List<GridCell> path = a.pathFromGrid(grid,
+                new int[] {start.gridY, start.gridX},
+                new int[] {end.gridY, end.gridX});
+
         assert path != null;
 
         printGridWithPath(grid, path, start, end);

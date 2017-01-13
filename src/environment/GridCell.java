@@ -26,6 +26,15 @@ public class GridCell {
         return this.hlaID != Integer.MAX_VALUE || this.collisionRadiusOverlap > 0;
     }
 
+    public void removeEntity() {
+        this.hlaID = Integer.MAX_VALUE;
+    }
+
+    public void placeEntity(long hlaID) {
+        assert this.hlaID != Integer.MAX_VALUE;
+        this.hlaID = hlaID;
+    }
+
     public String toString() {
         return "Cell: (" + this.gridX + "," + this.gridY + "): B=" + this.isBlocked() + " O=" + this.isOccupied();
     }
