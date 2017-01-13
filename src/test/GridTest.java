@@ -37,7 +37,7 @@ public class GridTest {
                 log("Configured");
 
                 // 2. Connect on RTI
-                local_settings_designator = "";//"crcHost="+config.getCrcHost()+"\ncrcPort="+config.getCrcPort();
+                local_settings_designator = "crcHost="+config.getCrcHost()+"\ncrcPort="+config.getCrcPort();
                 super.connectOnRTI(local_settings_designator);
                 log("Connected to RTI");
 
