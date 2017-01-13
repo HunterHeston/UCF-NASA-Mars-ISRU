@@ -31,7 +31,7 @@ public class GridCell {
     }
 
     public void placeEntity(long hlaID) {
-        assert this.hlaID != Integer.MAX_VALUE;
+        assert this.hlaID == Integer.MAX_VALUE;
         this.hlaID = hlaID;
     }
 

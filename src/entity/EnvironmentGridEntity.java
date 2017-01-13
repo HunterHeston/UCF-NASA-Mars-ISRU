@@ -88,13 +88,9 @@ public class EnvironmentGridEntity {
                                              new int[] {finish.gridY, finish.gridX});
 
         if(!path.isEmpty()) {
-            GridCell[] pathArray = (GridCell[]) path.toArray();
+            GridCell[] pathArray = Arrays.copyOf(path.toArray(), path.size(), GridCell[].class);
             ArrayUtils.reverse(pathArray);
-
-            GridCell[] finalPathArray = new GridCell[pathArray.length-1];
-            for(int i=0; i<pathArray.length; i++) {
-                finalPathArray[i] = pathArray[i];
-            }
+            GridCell[] finalPathArray = Arrays.copyOfRange(pathArray, 1, pathArray.length);
 
             return finalPathArray;
         }
@@ -109,6 +105,11 @@ public class EnvironmentGridEntity {
             return false;
         }
 
+        if(Math.abs(cell.gridX-targetX) > 1 || Math.abs(cell.gridY-targetY) > 1) {
+            logger.error("Out of bounds attempt to move from " + cell + " to " + targetX + "," + targetY);
+            return false;
+        }
+
         checkGridIndex(targetX, targetY);
         GridCell target = this.gridArray[targetY][targetX];
 
@@ -118,11 +119,13 @@ public class EnvironmentGridEntity {
         //  Thread danger here, applyCollisions changes shared memory.....
         if(hasCollisionsWithinRadius(collisionRadius, targetX, targetY)) {
             applyCollisions(collisionRadius, cell.gridX, cell.gridY, false);
+            logger.error("Invalid attempt to move to a collision grid");
             return false;
         }
 
         cell.removeEntity();
         target.placeEntity(hlaID);
+        entityToGridCellMap.put(hlaID, target);
         return true;
     }
 
@@ -188,11 +191,11 @@ public class EnvironmentGridEntity {
      *
      * @return
      */
-    public static void printGridWithPath(GridCell[][] grid, List<GridCell> path, GridCell start, GridCell end) {
+    public static void printGridWithPath(GridCell[][] grid, GridCell[] path, GridCell start, GridCell end) {
         Set<GridCell> pathSet = new HashSet<>();
 
         if(path!=null) {
-            pathSet.addAll(path);
+            pathSet.addAll(Arrays.asList(path));
         }
 
         for(int i = 0; i < grid.length; i++) {

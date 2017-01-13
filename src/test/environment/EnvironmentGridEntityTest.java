@@ -7,6 +7,8 @@ import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -116,14 +118,92 @@ public class EnvironmentGridEntityTest {
 
         GridCell[] path = grid.findPath(start, end);
 
-        logger.debug(path);
+        grid.printGridWithPath(grid.gridArray, path, start, end);
 
-        assert path[0].gridX == 2;
-        assert path[0].gridY == 0;
+        assert path[0].gridX == 1;
+        assert path[0].gridY == 1;
 
-        assert path[1].gridX == 1;
-        assert path[1].gridY == 1;
+        assert path[1].gridX == 2;
+        assert path[1].gridY == 2;
 
+        assert path[2].gridX == 1;
+        assert path[2].gridY == 3;
+
+        assert path[3].gridX == 0;
+        assert path[3].gridY == 3;
+    }
+
+    @Test
+    public void gridMoveTest() throws Exception {
+        String[] gridSource = {
+                "_ _ _ _ _ _ _ _ _ _ ",
+                "_ _ E E _ _ _ _ _ _ ",
+                "B B B B _ _ _ _ _ _ ",
+                "_ _ _ _ _ _ _ _ _ _ ",
+                "_ _ _ _ _ _ _ _ _ _ ",
+                "_ _ _ _ _ _ _ _ _ _ ",
+                "_ _ _ _ _ _ _ _ _ _ ",
+                "_ _ _ _ _ _ _ _ _ _ ",
+                "_ _ _ _ _ _ _ _ _ _ ",
+        };
+
+        EnvironmentGridEntity grid = EnvironmentGridFactory.gridFromTXT(gridSource);
+        GridCell[] entities = getEntityCellsFromText(grid, gridSource);
+
+        logger.debug("Grid Move Initial");
+        grid.printGrid(grid.gridArray);
+        GridCell cell = entities[1];
+
+        //  Normal Move
+        long hlaID = cell.hlaID;
+        grid.gridMove(hlaID, 4, 1);
+
+        assert grid.entityToGridCellMap.get(hlaID).gridX == 4;
+        assert grid.entityToGridCellMap.get(hlaID).gridY == 1;
+
+        logger.debug("Grid Move Final");
+        grid.printGrid(grid.gridArray);
+
+        //  Too Far Move
+        assert !grid.gridMove(hlaID, 6, 1);
+        assert grid.entityToGridCellMap.get(hlaID).gridX == 4;
+        assert grid.entityToGridCellMap.get(hlaID).gridY == 1;
+
+        //  Blocked Move
+        assert !grid.gridMove(hlaID, 3,  2);
+        assert grid.entityToGridCellMap.get(hlaID).gridX == 4;
+        assert grid.entityToGridCellMap.get(hlaID).gridY == 1;
+
+        //  Occupied Move
+        assert grid.gridMove(hlaID, 3, 1);
+        assert !grid.gridMove(hlaID, 2, 1);
+        assert grid.entityToGridCellMap.get(hlaID).gridX == 3;
+        assert grid.entityToGridCellMap.get(hlaID).gridY == 1;
+
+        //  Out of Bounds Move
+        assert grid.gridMove(hlaID, 2, 0);
+        boolean annoying = false;
+        try {grid.gridMove(hlaID, 2, -1);} catch(Exception e) {annoying=true;}
+
+        assert annoying;
+        assert grid.entityToGridCellMap.get(hlaID).gridX == 2;
+        assert grid.entityToGridCellMap.get(hlaID).gridY == 0;
+
+    }
+
+    public static GridCell[] getEntityCellsFromText(EnvironmentGridEntity grid, String[] gridSource) throws Exception {
+        ArrayList<GridCell> cellList = new ArrayList<>();
+
+        for(int i=0; i<gridSource.length; i++) {
+            for(int j=0; j<gridSource[0].length()/2; j++) {
+                if(gridSource[i].charAt(j*2) == 'E') {
+                    grid.placeEntity(cellList.size()+1, j, i, 1);
+                    cellList.add(grid.gridArray[i][j]);
+                }
+            }
+        }
+
+        return Arrays.copyOf(cellList.toArray(), cellList.size(), GridCell[].class);
     }
 
 }
