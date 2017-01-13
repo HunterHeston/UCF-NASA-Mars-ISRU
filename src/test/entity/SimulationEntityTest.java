@@ -1,6 +1,7 @@
 package test.entity;
 
 import entity.SimulationEntity;
+import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import java.util.LinkedList;
@@ -10,10 +11,11 @@ import java.util.Queue;
  * Created by Andrew on 1/9/2017.
  */
 public class SimulationEntityTest {
-    
+    final static Logger logger = Logger.getLogger(SimulationEntityTest.class);
+
     @Test
     public void stateTransitionTest() throws Exception {
-        SimulationEntity entity = new SimulationEntity(0, 0);
+        SimulationEntity entity = new SimulationEntity(0, 0, 1.0, 1.0);
         assert entity.movementState == SimulationEntity.MovementState.Stopped;
 
         entity.beginPathFinding(1, 1);
@@ -26,17 +28,14 @@ public class SimulationEntityTest {
         entity.beginTransit(path);
         assert entity.movementState == SimulationEntity.MovementState.InMotion;
 
-        entity.gridMovement();
-        assert entity.movementState == SimulationEntity.MovementState.GridMovement;
-
-        entity.walkPath();
+        entity.moveTowardsTarget();
         assert entity.movementState == SimulationEntity.MovementState.Stopped;
-        assert entity.gridIndex.row == target.row && entity.gridIndex.col == target.col;
+        assert entity.gridIndex.row == 1 && entity.gridIndex.col == 1;
     }
 
     @Test
     public void longMovementTest() throws Exception {
-        SimulationEntity entity = new SimulationEntity(0, 0);
+        SimulationEntity entity = new SimulationEntity(0, 0, 2, 1);
         assert entity.movementState == SimulationEntity.MovementState.Stopped;
 
         entity.beginPathFinding(2, 3);
@@ -49,21 +48,33 @@ public class SimulationEntityTest {
         path.add(new SimulationEntity.GridIndex(2, 2));
         path.add(new SimulationEntity.GridIndex(2, 3));
 
+        Queue<SimulationEntity.GridIndex> path2 = (Queue) new LinkedList<>();
+
+        path2.add(new SimulationEntity.GridIndex(1, 1));
+        path2.add(new SimulationEntity.GridIndex(2, 2));
+        path2.add(new SimulationEntity.GridIndex(2, 3));
+
         entity.beginTransit(path);
         assert entity.movementState == SimulationEntity.MovementState.InMotion;
 
-        entity.gridMovement();
-        assert entity.movementState == SimulationEntity.MovementState.GridMovement;
+        while(!path2.isEmpty()) {
+            SimulationEntity.GridIndex index = path2.poll();
 
-        entity.walkPath();
-        assert entity.gridIndex.row == 1 && entity.gridIndex.col == 1;
-        assert entity.movementState == SimulationEntity.MovementState.GridMovement;
+            entity.moveTowardsTarget();
+            assert entity.movementState == SimulationEntity.MovementState.InMotion;
+            assert entity.gridIndex.row == index.row && entity.gridIndex.col == index.col;
 
-        entity.walkPath();
-        assert entity.gridIndex.row == 2 && entity.gridIndex.col == 2;
-        assert entity.movementState == SimulationEntity.MovementState.GridMovement;
+            entity.gridMovement();
+            assert entity.movementState == SimulationEntity.MovementState.GridMovement;
 
-        entity.walkPath();
+            if(!path2.isEmpty()) {
+                entity.gridMovementResponse(true);
+                assert entity.movementState == SimulationEntity.MovementState.InMotion;
+            } else {
+            }
+        }
+
+        entity.stopTransit();
         assert entity.gridIndex.row == 2 && entity.gridIndex.col == 3;
         assert entity.movementState == SimulationEntity.MovementState.Stopped;
     }
