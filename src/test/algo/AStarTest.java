@@ -1,8 +1,11 @@
 package test.algo;
 
 import algo.AStar;
+import entity.EnvironmentGridEntity;
+import environment.EnvironmentGridFactory;
 import environment.GridCell;
 import org.apache.log4j.Logger;
+import org.junit.Test;
 
 import java.util.HashSet;
 import java.util.List;
@@ -144,6 +147,57 @@ public class AStarTest {
         logger.debug("pathFromGrid completed successfully");
     }
 
+    @Test
+    public void accuracyTest() {
+        String[] gridSource = {
+                "S B E _ _ _ _ _ _ _ ",
+                "_ _ _ _ _ _ _ _ _ _ ",
+                "B B _ _ _ _ _ _ _ _ ",
+                "_ _ _ _ _ _ _ _ _ _ ",
+                "_ _ _ _ _ _ _ _ _ _ ",
+                "_ _ _ _ _ _ _ _ _ _ ",
+                "_ _ _ _ _ _ _ _ _ _ ",
+                "_ _ _ _ _ _ _ _ _ _ ",
+                "_ _ _ _ _ _ _ _ _ _ ",
+        };
+
+        EnvironmentGridEntity grid = EnvironmentGridFactory.gridFromTXT(gridSource);
+
+        GridCell start = null;
+        GridCell end = null;
+
+        for(int i = 0; i < gridSource.length/2; i++) {
+            for(int j = 0; j < gridSource[0].length()/2; j++) {
+                char sourceChar = gridSource[i].charAt(j*2);
+
+                GridCell cell = grid.gridArray[i][j];
+
+                if(sourceChar == 'S') {
+                    start = cell;
+                } else if(sourceChar == 'E') {
+                    end = cell;
+                }
+            }
+        }
+
+        AStar<GridCell> a = new AStar<>();
+        List<GridCell> path = a.pathFromGrid(grid.gridArray,
+                new int[] {start.gridY, start.gridX},
+                new int[] {end.gridY, end.gridX});
+
+        printGridWithPath(grid.gridArray, path, start, end);
+        logger.debug(path);
+
+        assert path.get(0).gridX == 2;
+        assert path.get(0).gridY == 0;
+
+        assert path.get(1).gridX == 1;
+        assert path.get(1).gridY == 1;
+
+        assert path.get(2).gridX == 0;
+        assert path.get(2).gridY == 0;
+    }
+
     public void printGridWithPath(GridCell[][] grid, List<GridCell> path, GridCell start, GridCell end) {
         Set<GridCell> pathSet = new HashSet<>();
 
@@ -172,5 +226,4 @@ public class AStarTest {
             logger.debug(sb);
         }
     }
-
 }

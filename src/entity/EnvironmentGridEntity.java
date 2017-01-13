@@ -1,6 +1,7 @@
 package entity;
 
 import algo.AStar;
+import com.bluecatcode.junit.shaded.org.apache.commons.lang3.ArrayUtils;
 import environment.GridCell;
 import org.apache.log4j.Logger;
 
@@ -79,14 +80,26 @@ public class EnvironmentGridEntity {
         return true;
     }
 
-    public List<GridCell> findPath(GridCell start, GridCell finish) {
+    public GridCell[] findPath(GridCell start, GridCell finish) {
         AStar a = new AStar<GridCell>();
 
         List<GridCell> path = a.pathFromGrid(this.gridArray,
                                              new int[] {start.gridY, start.gridX},
                                              new int[] {finish.gridY, finish.gridX});
 
-        return path;
+        if(!path.isEmpty()) {
+            GridCell[] pathArray = (GridCell[]) path.toArray();
+            ArrayUtils.reverse(pathArray);
+
+            GridCell[] finalPathArray = new GridCell[pathArray.length-1];
+            for(int i=0; i<pathArray.length; i++) {
+                finalPathArray[i] = pathArray[i];
+            }
+
+            return finalPathArray;
+        }
+
+        return null;
     }
 
     public boolean gridMove(long hlaID, int targetX, int targetY) throws PlacementException {

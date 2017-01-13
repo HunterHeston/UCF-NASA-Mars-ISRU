@@ -3,6 +3,7 @@ package test.environment;
 import entity.EnvironmentGridEntity;
 import environment.EnvironmentGridFactory;
 import environment.GridCell;
+import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
@@ -13,6 +14,8 @@ import java.util.List;
  * Created by Andrew on 1/8/2017.
  */
 public class EnvironmentGridEntityTest {
+    final static Logger logger = Logger.getLogger(EnvironmentGridEntityTest.class);
+
     public ExpectedException thrown = ExpectedException.none();
 
     @Test
@@ -111,25 +114,15 @@ public class EnvironmentGridEntityTest {
         GridCell start = grid.gridArray[0][0];
         GridCell end   = grid.gridArray[3][0];
 
-        List<GridCell> path = grid.findPath(start, end);
+        GridCell[] path = grid.findPath(start, end);
 
-        assert path.get(0).gridX == 0;
-        assert path.get(0).gridY == 1;
+        logger.debug(path);
 
-        assert path.get(1).gridX == 1;
-        assert path.get(1).gridY == 1;
+        assert path[0].gridX == 2;
+        assert path[0].gridY == 0;
 
-        assert path.get(2).gridX == 2;
-        assert path.get(2).gridY == 1;
-
-        assert path.get(3).gridX == 2;
-        assert path.get(3).gridY == 2;
-
-        assert path.get(4).gridX == 1;
-        assert path.get(4).gridY == 3;
-
-        assert path.get(5).gridX == 3;
-        assert path.get(5).gridY == 0;
+        assert path[1].gridX == 1;
+        assert path[1].gridY == 1;
 
     }
 
