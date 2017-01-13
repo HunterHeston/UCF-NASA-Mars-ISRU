@@ -10,6 +10,7 @@ import java.util.Queue;
  * Created by Andrew on 1/9/2017.
  */
 public class SimulationEntityTest {
+    
     @Test
     public void stateTransitionTest() throws Exception {
         SimulationEntity entity = new SimulationEntity(0, 0);
