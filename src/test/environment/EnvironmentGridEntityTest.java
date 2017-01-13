@@ -1,6 +1,6 @@
 package test.environment;
 
-import environment.EnvironmentGrid;
+import entity.EnvironmentGridEntity;
 import environment.EnvironmentGridFactory;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -9,7 +9,7 @@ import org.junit.rules.ExpectedException;
 /**
  * Created by Andrew on 1/8/2017.
  */
-public class EnvironmentGridTest {
+public class EnvironmentGridEntityTest {
     public ExpectedException thrown = ExpectedException.none();
 
     @Test
@@ -37,7 +37,7 @@ public class EnvironmentGridTest {
                 "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ",
         };
 
-        EnvironmentGrid grid = EnvironmentGridFactory.gridFromTXT(gridSource);
+        EnvironmentGridEntity grid = EnvironmentGridFactory.gridFromTXT(gridSource);
 
         //  Multiple place success
         grid.placeEntity(1, 0, 0, 1);
@@ -48,44 +48,44 @@ public class EnvironmentGridTest {
         assert grid.gridArray[4][4].hlaID == 2;
         assert grid.gridArray[4][6].hlaID == 3;
 
-        EnvironmentGrid.printGrid(grid.gridArray);
+        EnvironmentGridEntity.printGrid(grid.gridArray);
 
         //  Duplicate place fails
         boolean annoying = false;
-        try { grid.placeEntity(3, 9, 9, 1); } catch(EnvironmentGrid.PlacementException e) {annoying=true;}
+        try { grid.placeEntity(3, 9, 9, 1); } catch(EnvironmentGridEntity.PlacementException e) {annoying=true;}
         assert annoying;
 
         //  Blocked place fails
         annoying = false;
-        try { grid.placeEntity(4, 0, 5, 1); } catch(EnvironmentGrid.PlacementException e) {annoying=true;}
+        try { grid.placeEntity(4, 0, 5, 1); } catch(EnvironmentGridEntity.PlacementException e) {annoying=true;}
         assert annoying;
 
         //  Direct overlap place fails (other entity)
         annoying = false;
-        try { grid.placeEntity(4, 5, 5, 1); } catch(EnvironmentGrid.PlacementException e) {annoying=true;}
+        try { grid.placeEntity(4, 5, 5, 1); } catch(EnvironmentGridEntity.PlacementException e) {annoying=true;}
         assert annoying;
 
         //  Direct overlap place fails (blocked cell)
         grid.placeEntity(4, 4, 9, 2);
-        EnvironmentGrid.printGrid(grid.gridArray);
+        EnvironmentGridEntity.printGrid(grid.gridArray);
 
         annoying = false;
-        try { grid.placeEntity(5, 4, 8, 1); } catch(EnvironmentGrid.PlacementException e) {annoying=true;}
+        try { grid.placeEntity(5, 4, 8, 1); } catch(EnvironmentGridEntity.PlacementException e) {annoying=true;}
         assert annoying;
 
         //  Adjacent overlap place fails (other entity)
         annoying = false;
-        try { grid.placeEntity(5, 4, 7, 2); } catch(EnvironmentGrid.PlacementException e) {annoying=true;}
+        try { grid.placeEntity(5, 4, 7, 2); } catch(EnvironmentGridEntity.PlacementException e) {annoying=true;}
         assert annoying;
 
         //  Adjacent overlap place fails (blocked cell)
         annoying = false;
-        try { grid.placeEntity(5, 3, 4, 2); } catch(EnvironmentGrid.PlacementException e) {annoying=true;}
+        try { grid.placeEntity(5, 3, 4, 2); } catch(EnvironmentGridEntity.PlacementException e) {annoying=true;}
         assert annoying;
 
         //  Out of bounds fails
         annoying = false;
-        try { grid.placeEntity(5, 30, 40, 2); } catch(EnvironmentGrid.PlacementException e) {annoying=true;}
+        try { grid.placeEntity(5, 30, 40, 2); } catch(EnvironmentGridEntity.PlacementException e) {annoying=true;}
         assert annoying;
     }
 

@@ -1,6 +1,6 @@
 package test.test;
 
-import environment.EnvironmentGrid;
+import entity.EnvironmentGridEntity;
 import environment.EnvironmentGridFactory;
 import environment.GridCell;
 
@@ -107,7 +107,7 @@ public class TestRunner extends JPanel implements Runnable {
                 "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ",
         };
 
-        EnvironmentGrid grid = EnvironmentGridFactory.gridFromTXT(gridSource);
+        EnvironmentGridEntity grid = EnvironmentGridFactory.gridFromTXT(gridSource);
 
         grid.placeEntity(1, 0, 0, 1);
         grid.placeEntity(2, 4, 4, 1);

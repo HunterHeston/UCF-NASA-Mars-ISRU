@@ -1,6 +1,6 @@
 package test;
 
-import environment.EnvironmentFederate;
+import environment.EnvironmentExecution;
 import siso.smackdown.FrameType;
 import skf.config.Configuration;
 import skf.config.ConfigurationFactory;
@@ -22,10 +22,10 @@ public class GridTest {
         System.out.println(message);
     }
 
-    public static class GridTestFederate extends EnvironmentFederate {
+    public static class GridTestExecution extends EnvironmentExecution {
         private String local_settings_designator = null;
 
-        public GridTestFederate(SEEAbstractFederateAmbassador federateAmbassador) {
+        public GridTestExecution(SEEAbstractFederateAmbassador federateAmbassador) {
             super(federateAmbassador);
         }
 
@@ -93,7 +93,7 @@ public class GridTest {
 
     public static void main(String[] args) {
         GridTestAmbassador testAmbassador = new GridTestAmbassador();
-        GridTestFederate testFederate = new GridTestFederate(testAmbassador);
+        GridTestExecution testFederate = new GridTestExecution(testAmbassador);
 
         try {
             testFederate.configureAndStart(new ConfigurationFactory().importConfiguration(confFile));

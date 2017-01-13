@@ -1,5 +1,6 @@
-package environment;
+package entity;
 
+import environment.GridCell;
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -8,8 +9,8 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created by Andrew on 1/1/2017.
  */
-public class EnvironmentGrid {
-    final static Logger logger = Logger.getLogger(EnvironmentGrid.class);
+public class EnvironmentGridEntity {
+    final static Logger logger = Logger.getLogger(EnvironmentGridEntity.class);
 
     public ConcurrentHashMap<Long, GridCell> entityToGridCellMap;
     public ConcurrentHashMap<Long, Integer> entityToCollisionRadiusMap;
@@ -28,7 +29,7 @@ public class EnvironmentGrid {
      * @param gridWidth
      * @param gridHeight
      */
-    public EnvironmentGrid(int gridWidth, int gridHeight) {
+    public EnvironmentGridEntity(int gridWidth, int gridHeight) {
         this.gridWidth = gridWidth;
         this.gridHeight = gridHeight;
 

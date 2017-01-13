@@ -1,5 +1,6 @@
 package environment;
 
+import entity.EnvironmentGridEntity;
 import siso.smackdown.utilities.Vector3;
 import skf.core.SEEAbstractFederate;
 import skf.core.SEEAbstractFederateAmbassador;
@@ -10,30 +11,30 @@ import java.util.Observer;
 /**
  * Created by Andrew on 1/1/2017.
  */
-public class EnvironmentFederate extends SEEAbstractFederate implements Observer {
+public class EnvironmentExecution extends SEEAbstractFederate implements Observer {
 
     public Vector3 gridOrigin;
     public double gridCellSize;
     public int gridHeight, gridWidth;
-    public EnvironmentGrid grid;
+    public EnvironmentGridEntity grid;
 
-    public EnvironmentFederate(SEEAbstractFederateAmbassador federateAmbassador) {
+    public EnvironmentExecution(SEEAbstractFederateAmbassador federateAmbassador) {
         this(federateAmbassador, new Vector3(), 1.0f, 10, 10);
     }
 
-    public EnvironmentFederate(SEEAbstractFederateAmbassador federateAmbassador, Vector3 gridOrigin, double gridCellSize, int gridHeight, int gridWidth) {
+    public EnvironmentExecution(SEEAbstractFederateAmbassador federateAmbassador, Vector3 gridOrigin, double gridCellSize, int gridHeight, int gridWidth) {
         super(federateAmbassador);
         this.gridOrigin = gridOrigin;
         this.gridCellSize = gridCellSize;
         this.gridHeight = gridHeight;
         this.gridWidth = gridWidth;
 
-        this.grid = new EnvironmentGrid(this.gridWidth, this.gridHeight);
+        this.grid = new EnvironmentGridEntity(this.gridWidth, this.gridHeight);
     }
 
     @Override
     protected void doAction() {
-        EnvironmentGrid.printGrid(this.grid.gridArray);
+        EnvironmentGridEntity.printGrid(this.grid.gridArray);
     }
 
     @Override
@@ -48,7 +49,7 @@ public class EnvironmentFederate extends SEEAbstractFederate implements Observer
 
             }
 
-        } catch (EnvironmentGrid.PlacementException e) {
+        } catch (EnvironmentGridEntity.PlacementException e) {
             System.out.print("Unhandled Exception placing entity " + hlaID);
             e.printStackTrace();
         }
