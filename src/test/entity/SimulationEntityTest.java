@@ -68,5 +68,13 @@ public class SimulationEntityTest {
         assert entity.movementState == SimulationEntity.MovementState.Stopped;
     }
 
+    @Test
+    public void failureTest() throws Exception {
+        SimulationEntity entity = new SimulationEntity(0, 0);
+        assert entity.movementState == SimulationEntity.MovementState.Stopped;
+
+
+
+    }
 
 }
