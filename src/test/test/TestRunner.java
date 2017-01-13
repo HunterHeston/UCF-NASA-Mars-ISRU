@@ -3,6 +3,12 @@ package test.test;
 import entity.EnvironmentGridEntity;
 import environment.EnvironmentGridFactory;
 import environment.GridCell;
+import federate.EnvironmentGridExecution;
+import federate.SimulationEntityExecution;
+import siso.smackdown.utilities.Vector3;
+import test.federate.mock.TestRoverMock;
+import test.test.rover.TestRover;
+import test.test.rover.TestRoverExecution;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,6 +19,7 @@ import java.awt.*;
 public class TestRunner extends JPanel implements Runnable {
 
     public GridCell[][] grid;
+    public TestEngine engine;
 
     public void drawGrid(Graphics g) {
         g.setColor(Color.GREEN);
@@ -25,27 +32,27 @@ public class TestRunner extends JPanel implements Runnable {
                 g.setColor(Color.GREEN);
                 g.drawRect((j*cellSize) + 6, (i*cellSize) + 6, cellSize, cellSize);
 
-                g.setColor(Color.white);
-                //g.drawChars(("["+j+","+i+"]").toCharArray(), 0, 10, ((j+1)*cellSize) + 6, ((i+1)*cellSize) + 6);
+                if(grid[i][j].isBlocked()) {
+                    g.setColor(Color.white);
+                    g.fillRect((j*cellSize) + 6, (i*cellSize) + 6, cellSize, cellSize);
+                }
             }
         }
     }
 
     public void drawEntities(Graphics g) {
-        int cellSize = 500 / grid.length;
+        for(SimulationEntityExecution execution : this.engine.entities) {
+            if(execution instanceof TestRoverExecution){
+                g.setColor(Color.red);
+                int cellSize = 500 / grid.length;
 
-        for(int i=0; i<grid.length; i++) {
-            for(int j=0; j<grid[0].length; j++) {
-                GridCell cell = grid[i][j];
-                if(cell.isBlocked()) {
-                    g.setColor(Color.gray);
-                    g.fillRect((j*cellSize) + 6, (i*cellSize) + 6, cellSize, cellSize);
-                } else if (cell.isOccupied()) {
-                    g.setColor(Color.white);
-                    g.drawChars(new char[] {'E'}, 0, 1, ((j+1)*cellSize)-(cellSize/2), ((i+1)*cellSize));
-                }
+                g.fillOval((int)(execution.simulationEntity.position[0]*cellSize) + 6,
+                            (int)(execution.simulationEntity.position[1]*cellSize) + 6,
+                            cellSize, cellSize);
+
             }
         }
+
     }
 
     @Override
@@ -66,6 +73,8 @@ public class TestRunner extends JPanel implements Runnable {
     }
 
     public void update() {
+        this.engine.update();
+
         Graphics g = getGraphics();
         clearScreen(g);
 
@@ -75,8 +84,9 @@ public class TestRunner extends JPanel implements Runnable {
         paintComponents(g);
     }
 
-    public TestRunner(GridCell[][] grid) {
-        this.grid = grid;
+    public TestRunner(TestEngine engine) {
+        this.engine = engine;
+        this.grid = engine.gridEntity.gridArray;
     }
 
     public static void main(String[] args) throws Exception {
@@ -85,12 +95,12 @@ public class TestRunner extends JPanel implements Runnable {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         String[] gridSource = {
+                "R _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ",
                 "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ",
                 "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ",
                 "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ",
                 "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ",
-                "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ",
-                "B B B B B B B B B _ _ _ _ _ _ _ _ _ _ _ ",
+                "B B B B B _ B B B _ _ _ _ _ _ _ _ _ _ _ ",
                 "_ _ _ _ _ _ _ B B B B B B _ _ _ _ _ _ _ ",
                 "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ",
                 "_ _ _ _ _ _ B B B B B B B B B B _ _ _ _ ",
@@ -108,17 +118,37 @@ public class TestRunner extends JPanel implements Runnable {
         };
 
         EnvironmentGridEntity grid = EnvironmentGridFactory.gridFromTXT(gridSource);
+        EnvironmentGridExecution gridExecution = new EnvironmentGridExecution(grid, new Vector3(), 1.0);
 
-        grid.placeEntity(1, 0, 0, 1);
-        grid.placeEntity(2, 4, 4, 1);
-        grid.placeEntity(3, 6, 4, 1);
+        TestEngine engine = new TestEngine(gridExecution);
 
-        TestRunner runner = new TestRunner(grid.gridArray);
+        extractEntitiesFromTXT(gridSource, engine);
+
+        TestRunner runner = new TestRunner(engine);
         frame.getContentPane().add(runner);
 
         frame.setVisible(true);
         Thread thread = new Thread(runner);
         thread.start();
+    }
+
+    private static void extractEntitiesFromTXT(String[] gridSource, TestEngine engine) {
+        long hlaID = 0;
+
+        for(int i=0; i < gridSource.length; i++) {
+            for(int j=0; j < gridSource[0].length()/2; j++) {
+                char c = gridSource[i].charAt(j*2);
+                if(c == 'R') {
+                    TestRover rover = new TestRover(j, i, 0.2, 1.0);
+                    TestRoverExecution execution = new TestRoverExecution(rover);
+                    TestRoverMock mock = new TestRoverMock(hlaID, execution, engine.gridExecution);
+
+                    engine.addEntity(hlaID, 1, execution, mock);
+
+                    hlaID++;
+                }
+            }
+        }
     }
 }
 

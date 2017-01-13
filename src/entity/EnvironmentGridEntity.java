@@ -46,6 +46,21 @@ public class EnvironmentGridEntity {
         this.entityToCollisionRadiusMap = new ConcurrentHashMap<>();
     }
 
+    public GridCell getCellFromHLAId(long hlaID) {
+        return this.entityToGridCellMap.get(hlaID);
+    }
+
+    public GridCell getCell(int gridX, int gridY) {
+        try {
+            this.checkGridIndex(gridX, gridY);
+            return this.gridArray[gridY][gridX];
+        } catch (PlacementException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     /**
      *
      * @param hlaID
@@ -117,6 +132,21 @@ public class EnvironmentGridEntity {
         if(hasCollisionsWithinRadius(collisionRadius, targetX, targetY)) {
             applyCollisions(collisionRadius, cell.gridX, cell.gridY, false);
             logger.error("Invalid attempt to move to a collision grid");
+
+            collisionRadius -= 1;
+            for(int i=-collisionRadius; i<=collisionRadius; i++) {
+                for(int j=-collisionRadius; j<=collisionRadius; j++) {
+                    int collisionX = targetX+i;
+                    int collisionY = targetY+j;
+
+                    if(collisionX < 0 || collisionX >= this.gridWidth || collisionY < 0 || collisionY >= this.gridHeight) {
+                        continue;
+                    }
+
+                    logger.debug("Collision: " + this.gridArray[collisionY][collisionX]);
+
+                }
+            }
             return false;
         }
 

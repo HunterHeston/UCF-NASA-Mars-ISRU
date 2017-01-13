@@ -29,13 +29,13 @@ public class SimulationEntityExecutionTest {
         path.add(new SimulationEntity.GridIndex(4, 5));
         path.add(new SimulationEntity.GridIndex(5, 5));
 
-        entityExecution.handlePathFindingInteractionResponse(path);
+        entityExecution.receivePathFindingInteractionResponse(path);
         assert simulationEntity.movementState == SimulationEntity.MovementState.InMotion;
 
         for(int i=0;i<500 && simulationEntity.movementState != SimulationEntity.MovementState.Stopped; i++) {
-            entityExecution.doAction();
+            entityExecution.activeUpdate();
             if(simulationEntity.movementState == SimulationEntity.MovementState.GridMovement) {
-                entityExecution.handleGridMovementInteractionResponse(true);
+                entityExecution.receiveGridMovementInteractionResponse(true);
             }
         }
 
@@ -61,15 +61,15 @@ public class SimulationEntityExecutionTest {
         path.add(new SimulationEntity.GridIndex(4, 5));
         path.add(new SimulationEntity.GridIndex(5, 5));
 
-        entityExecution.handlePathFindingInteractionResponse(path);
+        entityExecution.receivePathFindingInteractionResponse(path);
         assert simulationEntity.movementState == SimulationEntity.MovementState.InMotion;
 
         for(int i=0;i<500 && simulationEntity.movementState != SimulationEntity.MovementState.Stopped; i++) {
-            entityExecution.doAction();
+            entityExecution.activeUpdate();
             if(simulationEntity.movementState == SimulationEntity.MovementState.GridMovement && simulationEntity.path.size() != 3) {
-                entityExecution.handleGridMovementInteractionResponse(true);
+                entityExecution.receiveGridMovementInteractionResponse(true);
             } else if(simulationEntity.movementState == SimulationEntity.MovementState.GridMovement && simulationEntity.path.size() == 3) {
-                entityExecution.handleGridMovementInteractionResponse(false);
+                entityExecution.receiveGridMovementInteractionResponse(false);
             }
         }
 

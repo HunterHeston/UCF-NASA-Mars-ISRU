@@ -3,7 +3,6 @@ package federate;
 import entity.SimulationEntity;
 import org.apache.log4j.Logger;
 
-import java.util.Observable;
 import java.util.Queue;
 
 /**
@@ -24,11 +23,7 @@ public class SimulationEntityExecution {
         this.movementSpeed = 0.2;
     }
 
-    public void update(Observable o, Object arg) {
-
-    }
-
-    public void doAction() {
+    public void activeUpdate() {
         movementUpdate();
 
         if(simulationEntity.movementState == SimulationEntity.MovementState.Stopped) {
@@ -41,15 +36,20 @@ public class SimulationEntityExecution {
     public void movementUpdate() {
 
         if(this.simulationEntity.movementState == SimulationEntity.MovementState.InMotion) {
-            boolean targetArrival = this.simulationEntity.moveTowardsTarget();
-            logger.debug("In motion and moved towards target arrived=" + targetArrival + " new pos=" + simulationEntity.position[0] + "," + simulationEntity.position[1]);
+            //  We need to gridMove on the first of each path
+            if(this.simulationEntity.isOnNewPath) {
+                this.simulationEntity.gridMovement();
+                this.simulationEntity.isOnNewPath = false;
+            } else {
+                boolean targetArrival = this.simulationEntity.moveTowardsTarget();
+                logger.debug("In motion and moved towards target arrived=" + targetArrival + " new pos=" + simulationEntity.position[0] + "," + simulationEntity.position[1]);
 
-            if(targetArrival) {
-                if(!this.simulationEntity.path.isEmpty()) {
-                    this.simulationEntity.gridMovement();
-                    this.beginGridMovementInteraction();
-                } else {
-                    this.simulationEntity.stopTransit();
+                if (targetArrival) {
+                    if (!this.simulationEntity.path.isEmpty()) {
+                        this.simulationEntity.gridMovement();
+                    } else {
+                        this.simulationEntity.stopTransit();
+                    }
                 }
             }
         }
@@ -61,9 +61,8 @@ public class SimulationEntityExecution {
     public void activeEntityUpdate() {
     }
 
-    //  Temporary arguments
-    //  TODO: Parameter should be the interaction!
-    public void handlePathFindingInteractionResponse(Queue<SimulationEntity.GridIndex> path) {
+    public void receivePathFindingInteractionResponse(Queue<SimulationEntity.GridIndex> path) {
+        logger.debug(path);
         if(path == null || path.isEmpty()) {
             this.simulationEntity.nullPathFindingResponse();
         } else {
@@ -71,11 +70,14 @@ public class SimulationEntityExecution {
         }
     }
 
-    public void beginGridMovementInteraction() {
+    public void receiveGridMovementInteractionResponse(boolean success) {
+        this.simulationEntity.gridMovementResponse(success);
     }
 
-    public void handleGridMovementInteractionResponse(boolean success) {
-        this.simulationEntity.gridMovementResponse(success);
+    public void sendGridMovementInteraction() {
+    }
+
+    public void sendPathFindingInteraction(int targetX, int targetY) {
     }
 
 }

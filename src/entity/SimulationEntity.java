@@ -9,6 +9,7 @@ import java.util.Queue;
  */
 public class SimulationEntity {
     final static Logger logger = Logger.getLogger(SimulationEntity.class);
+    public boolean isOnNewPath = false;
 
     public enum MovementState {
         Stopped,
@@ -44,6 +45,7 @@ public class SimulationEntity {
 
     public GridIndex gridIndex;
     public GridIndex targetGridIndex;
+    public GridIndex finalGridIndex;
 
     public Queue<GridIndex> path;
     public double movementSpeed;
@@ -51,14 +53,22 @@ public class SimulationEntity {
 
     public double[] position;
 
+    public int collisionRadius;
+
+    public SimulationEntity(int gridX, int gridY, int collisionRadius) {
+        this(gridX, gridY);
+        this.collisionRadius = collisionRadius;
+    }
     public SimulationEntity(int gridX, int gridY) {
-        this.gridIndex = new GridIndex(gridX, gridY);
+        this.gridIndex = new GridIndex(gridY, gridX);
         this.movementSpeed = 0;
         this.gridCellSize = 1.0;
 
         this.position = new double[3];
         this.position[0] = gridX * this.gridCellSize;
         this.position[1] = gridY * this.gridCellSize;
+
+        this.collisionRadius = 0;
     }
 
     public SimulationEntity(int gridX, int gridY, double movementSpeed, double gridCellSize) {
@@ -71,6 +81,7 @@ public class SimulationEntity {
         assert this.movementState == MovementState.Stopped;
         assert this.gridIndex.row != gridY && this.gridIndex.col != gridX;
 
+        this.finalGridIndex = new GridIndex(gridY, gridX);
         this.movementState = MovementState.PathFinding;
         logger.debug("State transition: Stopped -> Pathfinding");
     }
@@ -79,6 +90,7 @@ public class SimulationEntity {
         assert this.movementState == MovementState.PathFinding;
 
         this.targetGridIndex = null;
+        this.finalGridIndex = null;
         this.movementState = MovementState.Stopped;
         logger.debug("State transition: PathFinding -> Stopped");
     }
@@ -90,6 +102,7 @@ public class SimulationEntity {
         this.path = path;
         this.targetGridIndex = path.poll();
         this.movementState = MovementState.InMotion;
+        this.isOnNewPath = true;
         logger.debug("State transition: PathFinding -> InMotion");
     }
 
@@ -121,10 +134,11 @@ public class SimulationEntity {
 
     public void stopTransit() {
         this.targetGridIndex = null;
+        this.finalGridIndex = null;
         this.path.clear();
 
         this.movementState = MovementState.Stopped;
-        logger.debug("State transition GridMovement -> Stopped");
+        logger.debug("State transition GridMovement -> Stopped " + this.gridIndex);
     }
 
     //  Returns true when we have arrived at target
