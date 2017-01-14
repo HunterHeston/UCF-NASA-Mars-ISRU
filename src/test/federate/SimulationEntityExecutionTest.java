@@ -30,7 +30,8 @@ public class SimulationEntityExecutionTest {
         path.add(new SimulationEntityState.GridIndex(5, 5));
 
         entityExecution.receivePathFindingInteractionResponse(path);
-        assert simulationEntityState.movementState == SimulationEntityState.MovementState.InMotion;
+        assert simulationEntityState.movementState == SimulationEntityState.MovementState.GridMovement;
+        simulationEntityState.gridMovementResponse(true);
 
         for(int i = 0; i<500 && simulationEntityState.movementState != SimulationEntityState.MovementState.Stopped; i++) {
             entityExecution.activeUpdate();
@@ -62,7 +63,8 @@ public class SimulationEntityExecutionTest {
         path.add(new SimulationEntityState.GridIndex(5, 5));
 
         entityExecution.receivePathFindingInteractionResponse(path);
-        assert simulationEntityState.movementState == SimulationEntityState.MovementState.InMotion;
+        assert simulationEntityState.movementState == SimulationEntityState.MovementState.GridMovement;
+        simulationEntityState.gridMovementResponse(true);
 
         for(int i = 0; i<500 && simulationEntityState.movementState != SimulationEntityState.MovementState.Stopped; i++) {
             entityExecution.activeUpdate();

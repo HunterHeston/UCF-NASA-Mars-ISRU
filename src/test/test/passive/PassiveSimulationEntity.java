@@ -74,13 +74,16 @@ public class PassiveSimulationEntity extends PassiveUpdateMock {
         } else if(this.entityExecution.simulationEntityState.movementState ==
                        SimulationEntityState.MovementState.GridMovement) {
 
+
+            logger.debug("Requesting GridMovement to " + this.entityExecution.simulationEntityState.path.peek());
+            boolean success = this.gridExecution.receiveGridMoveInteraction(hlaID,
+                    this.entityExecution.simulationEntityState.path.peek().col,
+                    this.entityExecution.simulationEntityState.path.peek().row);
+
             //  The movement state is in GridMovement, therefore the state is expecting to
             //  to receive a GridMovementInteractionResponse.  Instead of sending an interaction,
             //  The callback to the corresponding EnvironmentGridExecution method is made directly.
-            this.entityExecution.receiveGridMovementInteractionResponse(
-                    this.gridExecution.receiveGridMoveInteraction(hlaID,
-                            this.entityExecution.simulationEntityState.targetGridIndex.col,
-                            this.entityExecution.simulationEntityState.targetGridIndex.row));
+            this.entityExecution.receiveGridMovementInteractionResponse(success);
         }
     }
 }

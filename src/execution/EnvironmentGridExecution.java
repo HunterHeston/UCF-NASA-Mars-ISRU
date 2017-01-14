@@ -12,6 +12,7 @@ import siso.smackdown.utilities.Vector3;
  */
 public class EnvironmentGridExecution {
     final static Logger logger = Logger.getLogger(EnvironmentGridExecution.class);
+
     public Vector3 gridOrigin;
     public double gridCellSize;
     public int gridHeight, gridWidth;
@@ -49,6 +50,7 @@ public class EnvironmentGridExecution {
 
     public boolean receiveGridMoveInteraction(long hlaID, int targetX, int targetY) {
         try {
+            logger.debug(String.format("Received GridMove %d [%d][%d]", hlaID, targetY, targetX));
             return this.grid.gridMove(hlaID, targetX, targetY);
         } catch (EnvironmentGridState.PlacementException e) {
             System.out.print("Unhandled Exception placing state " + hlaID);
@@ -61,7 +63,7 @@ public class EnvironmentGridExecution {
     public GridCell[] receivePathFindingInteraction(long hlaID, int targetX, int targetY) {
         GridCell start = this.grid.getCellFromHLAId(hlaID);
         GridCell end = this.grid.getCell(targetX, targetY);
-        logger.debug(start + " " + end);
+        logger.debug("Received Pathfinding interaction " + start + " " + end);
         return this.grid.findPath(start, end);
     }
 

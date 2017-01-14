@@ -17,8 +17,8 @@ import java.util.Queue;
  */
 public class SimulationEntityState {
     final static Logger logger = Logger.getLogger(SimulationEntityState.class);
-    public boolean isOnNewPath = false;
     public long identifier;
+    private boolean newPath;
 
     public enum MovementState {
         Stopped,
@@ -98,6 +98,17 @@ public class SimulationEntityState {
         logger.debug("State transition: Stopped -> Pathfinding");
     }
 
+    public void beginTransit(Queue<GridIndex> path) {
+        assert path != null && !path.isEmpty();
+        assert this.movementState == MovementState.PathFinding;
+
+        this.path = path;
+        this.newPath = true;
+        this.targetGridIndex = path.peek();
+        this.movementState = MovementState.GridMovement;
+        logger.debug("State transition: Pathfinding -> GridMovement");
+    }
+
     public void nullPathFindingResponse() {
         assert this.movementState == MovementState.PathFinding;
 
@@ -105,17 +116,6 @@ public class SimulationEntityState {
         this.finalGridIndex = null;
         this.movementState = MovementState.Stopped;
         logger.debug("State transition: PathFinding -> Stopped");
-    }
-
-    public void beginTransit(Queue<GridIndex> path) {
-        assert path != null && !path.isEmpty();
-        assert this.movementState == MovementState.PathFinding;
-
-        this.path = path;
-        this.targetGridIndex = path.poll();
-        this.movementState = MovementState.InMotion;
-        this.isOnNewPath = true;
-        logger.debug("State transition: PathFinding -> InMotion");
     }
 
     public void gridMovement() {
@@ -137,9 +137,10 @@ public class SimulationEntityState {
     public void continueTransit() {
         assert this.movementState == MovementState.GridMovement;
         assert path != null && !path.isEmpty();
-        assert this.targetGridIndex != null;
 
         this.targetGridIndex = path.poll();
+        logger.debug("Continuing transit " + this.targetGridIndex);
+
         this.movementState = MovementState.InMotion;
         logger.debug("State transition GridMovement -> InMotion");
     }
@@ -192,6 +193,7 @@ public class SimulationEntityState {
         //  Return true when we have arrived
         if(actX == targetGridX && actY == targetGridY) {
             this.gridIndex = this.targetGridIndex;
+            logger.debug("Arrived at " + this.gridIndex);
             return true;
         }
 

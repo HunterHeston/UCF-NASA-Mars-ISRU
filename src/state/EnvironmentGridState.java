@@ -144,7 +144,6 @@ public class EnvironmentGridState {
                     }
 
                     logger.debug("Collision: " + this.gridArray[collisionY][collisionX]);
-
                 }
             }
             return false;

@@ -59,20 +59,13 @@ public class SimulationEntityExecution {
      */
     public void movementUpdate() {
         if(this.simulationEntityState.movementState == SimulationEntityState.MovementState.InMotion) {
-            //  We need to gridMove on the first of each path
-            if(this.simulationEntityState.isOnNewPath) {
-                this.simulationEntityState.gridMovement();
-                this.simulationEntityState.isOnNewPath = false;
-            } else {
-                boolean targetArrival = this.simulationEntityState.moveTowardsTarget();
-                //logger.debug("In motion and moved towards target arrived=" + targetArrival + " new pos=" + simulationEntityState.position[0] + "," + simulationEntityState.position[1]);
+            boolean targetArrival = this.simulationEntityState.moveTowardsTarget();
 
-                if (targetArrival) {
-                    if (!this.simulationEntityState.path.isEmpty()) {
-                        this.simulationEntityState.gridMovement();
-                    } else {
-                        this.simulationEntityState.stopTransit();
-                    }
+            if (targetArrival) {
+                if (!this.simulationEntityState.path.isEmpty()) {
+                    this.simulationEntityState.gridMovement();
+                } else {
+                    this.simulationEntityState.stopTransit();
                 }
             }
         }
@@ -105,7 +98,8 @@ public class SimulationEntityExecution {
      *
      */
     public void receivePathFindingInteractionResponse(Queue<SimulationEntityState.GridIndex> path) {
-        logger.debug(path);
+        logger.debug("Received Path: " + path);
+
         if(path == null || path.isEmpty()) {
             this.simulationEntityState.nullPathFindingResponse();
         } else {

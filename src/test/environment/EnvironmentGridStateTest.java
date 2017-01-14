@@ -120,16 +120,20 @@ public class EnvironmentGridStateTest {
         grid.printGridWithPath(grid.gridArray, path, start, end);
 
         assert path[0].col == 1;
-        assert path[0].row == 1;
+        assert path[0].row == 0;
 
         assert path[1].col == 2;
-        assert path[1].row == 2;
+        assert path[1].row == 1;
 
-        assert path[2].col == 1;
-        assert path[2].row == 3;
+        assert path[2].col == 2;
+        assert path[2].row == 2;
 
-        assert path[3].col == 0;
+        assert path[3].col == 2;
         assert path[3].row == 3;
+
+        assert path[4].col == 1;
+        assert path[4].row == 3;
+
     }
 
     @Test

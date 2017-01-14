@@ -36,7 +36,7 @@ public class SimulationEntityStateTest {
 
     @Test
     public void longMovementTest() throws Exception {
-        SimulationEntityState entity = new SimulationEntityState(0, 0, 2, 1);
+        SimulationEntityState entity = new SimulationEntityState(0, 0, 2, 2.0, 1.0);
         assert entity.movementState == SimulationEntityState.MovementState.Stopped;
 
         entity.beginPathFinding(2, 3);
@@ -63,6 +63,8 @@ public class SimulationEntityStateTest {
 
             entity.moveTowardsTarget();
             assert entity.movementState == SimulationEntityState.MovementState.InMotion;
+
+            logger.debug(index + "  " + entity.gridIndex);
             assert entity.gridIndex.row == index.row && entity.gridIndex.col == index.col;
 
             entity.gridMovement();
