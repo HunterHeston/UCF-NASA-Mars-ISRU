@@ -116,7 +116,7 @@ public class TestRunner extends Canvas implements Runnable {
                 "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ",
                 "_ _ _ _ _ _ B B B B B B B B B B _ _ _ _ ",
                 "_ _ _ _ _ _ B _ _ _ B B B B _ _ _ _ _ _ ",
-                "_ _ _ _ _ _ B _ _ B _ _ _ _ _ B _ _ _ _ ",
+                "_ _ _ _ _ _ B _ _ B _ B _ _ _ B _ _ _ _ ",
                 "_ _ _ _ _ _ B _ _ B _ B _ _ _ B _ _ _ _ ",
                 "_ _ _ _ _ _ B _ _ B _ B _ _ B B B B B B ",
                 "_ _ _ _ _ _ B _ _ B _ B _ _ B _ _ _ _ _ ",
