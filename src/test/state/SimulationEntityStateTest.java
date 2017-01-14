@@ -1,4 +1,4 @@
-package test.entity;
+package test.state;
 
 import state.SimulationEntityState;
 import org.apache.log4j.Logger;

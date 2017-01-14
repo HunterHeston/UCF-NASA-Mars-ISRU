@@ -32,7 +32,7 @@ public class DummyRoverState extends SimpleChargeableEntityState {
         }
     }
 
-    public void goToPlace(int gridX, int gridY) {
+    public void beginMovingToPlace(int gridX, int gridY) {
         assert this.testRoverState == TestRoverState.WaitingForPlace;
         this.testRoverState = TestRoverState.GoingToPlace;
         this.beginPathFinding(gridX, gridY);
