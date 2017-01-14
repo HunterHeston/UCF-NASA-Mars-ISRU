@@ -8,16 +8,16 @@ import java.util.*;
 /**
  * Created by Andrew on 1/4/2017.
  */
-public class AStar {
+public class AStar<T extends Object> {
     final static Logger logger = Logger.getLogger(AStar.class);
 
     private static class Node {
-        private static final int INIT_SCORE = Integer.MAX_VALUE;
+        private static final double INIT_SCORE = Double.MAX_VALUE;
 
         public Object object;
         public List<Node> neighbors;
-        public int score = INIT_SCORE;
-        public int fScore = INIT_SCORE;
+        public double score = INIT_SCORE;
+        public double fScore = INIT_SCORE;
 
         public Node(Object object) {
             this.object = object;
@@ -46,7 +46,7 @@ public class AStar {
         return path;
     }
 
-    public static List<GridCell> pathFromGrid(GridCell[][] grid, GridCell start, GridCell end) {
+    public List<T> pathFromGrid(T[][] grid, int[] start, int[] end) {
         Node[][] nodeGrid = new Node[grid.length][grid[0].length];
 
         for(int i=0; i < grid.length; i++) {
@@ -56,11 +56,11 @@ public class AStar {
         }
 
         Node current;
-        Node startNode = nodeGrid[start.gridY][start.gridX];
-        Node endNode = nodeGrid[end.gridY][end.gridX];
+        Node startNode = nodeGrid[start[0]][start[1]];
+        Node endNode = nodeGrid[end[0]][end[1]];
 
         startNode.score = 0;
-        endNode.fScore = (int)Math.abs(Math.sqrt(Math.pow((double)end.gridX-start.gridX, 2.0) + Math.pow((double)end.gridY-start.gridY, 2.0)));
+        endNode.fScore = Math.abs(Math.sqrt(Math.pow((double)end[0]-start[0], 2.0) + Math.pow((double)end[1]-start[1], 2.0)));
 
         // Traversal map
         HashMap<Node, Node> cameFrom = new HashMap<>();
@@ -88,9 +88,9 @@ public class AStar {
             //  End
             if(current == endNode) {
                 List<Node> nodePath = reconstructPath(cameFrom, current);
-                List<GridCell> cellPath = new ArrayList<>();
+                List<T> cellPath = new ArrayList<>();
                 for(Node n : nodePath) {
-                    cellPath.add((GridCell) n.object);
+                    cellPath.add((T) n.object);
                 }
 
                 return cellPath;
@@ -109,7 +109,7 @@ public class AStar {
                 if(closedSet.contains(neighbor)) continue;
 
                 //  +1 Used for the cost of traversal
-                int tentScore = current.score + 1;
+                double tentScore = current.score + 1;
 
                 //  Newly discovered neighbor
                 if(!openSet.contains(neighbor)) {
@@ -123,7 +123,7 @@ public class AStar {
                 //  Update the fScore
                 GridCell cellNeighbor = (GridCell) neighbor.object;
                 neighbor.score = tentScore;
-                neighbor.fScore = neighbor.score + (int)Math.abs(Math.sqrt(Math.pow((double)end.gridX-cellNeighbor.gridX, 2.0) + Math.pow((double)end.gridY-cellNeighbor.gridY, 2.0)));
+                neighbor.fScore = neighbor.score + Math.abs(Math.sqrt(Math.pow((double)end[0]-cellNeighbor.col, 2.0) + Math.pow((double)end[1]-cellNeighbor.row, 2.0)));
 
                 fScoreQueue.remove(neighbor);
                 fScoreQueue.add(neighbor);
@@ -143,21 +143,58 @@ public class AStar {
     private static void getNeighborsFromGrid(Node current, Node[][] nodeGrid, ArrayList<Node> dest) {
         dest.clear();
 
-        int is = Math.max(0, ((GridCell)current.object).gridY-1);
-        int js = Math.max(0, ((GridCell)current.object).gridX-1);
+        int ic = ((GridCell)current.object).row;
+        int jc = ((GridCell)current.object).col;
 
-        int ie = Math.min(nodeGrid.length-1, ((GridCell)current.object).gridY+1);
-        int je = Math.min(nodeGrid[0].length-1, ((GridCell)current.object).gridX+1);
+        int is = Math.max(0, ic-1);
+        int js = Math.max(0, jc-1);
+
+        int ie = Math.min(nodeGrid.length-1, ((GridCell)current.object).row+1);
+        int je = Math.min(nodeGrid[0].length-1, ((GridCell)current.object).col+1);
 
         for(int i=is; i<=ie; i++) {
             for(int j=js; j<=je; j++) {
                 Node n = nodeGrid[i][j];
                 if(n == current) continue;
 
-                GridCell c = (GridCell) n.object;
-                if(!c.isBlocked() && !c.isOccupied()) {
-                    dest.add(n);
+                //  Diagonal, check adjacent diagnals too
+                if(i != ic && j != jc) {
+                    int cr1 = i > ic ? ic+1 : ic-1;
+                    int cc1 = jc;
+
+                    int cr2 = ic;
+                    int cc2 = j > jc ? jc+1 : jc-1;
+
+                    boolean cb1 = true;
+                    boolean cb2 = true;
+
+                    if(cr1 >= 0 && cr1 < nodeGrid.length && cc1 >=0 && cc1 < nodeGrid[0].length) {
+                        GridCell c = (GridCell) nodeGrid[cr1][cc1].object;
+                        if(c.isBlocked() || c.isOccupied()) {
+                            cb1 = false;
+                        }
+                    }
+
+                    if(cr2 >= 0 && cr2 < nodeGrid.length && cc2 >=0 && cc2 < nodeGrid[0].length) {
+                        GridCell c = (GridCell) nodeGrid[cr2][cc2].object;
+                        if(c.isBlocked() || c.isOccupied()) {
+                            cb2 = false;
+                        }
+                    }
+
+                    if(cb1 && cb2) {
+                        GridCell c = (GridCell) n.object;
+                        if(!c.isBlocked() && !c.isOccupied()) {
+                            dest.add(n);
+                        }
+                    }
+                } else {
+                    GridCell c = (GridCell) n.object;
+                    if(!c.isBlocked() && !c.isOccupied()) {
+                        dest.add(n);
+                    }
                 }
+
             }
         }
     }

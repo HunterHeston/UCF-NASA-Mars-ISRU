@@ -1,5 +1,7 @@
-package environment;
+package state;
 
+import algo.AStar;
+import environment.GridCell;
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -8,8 +10,8 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created by Andrew on 1/1/2017.
  */
-public class EnvironmentGrid {
-    final static Logger logger = Logger.getLogger(EnvironmentGrid.class);
+public class EnvironmentGridState {
+    final static Logger logger = Logger.getLogger(EnvironmentGridState.class);
 
     public ConcurrentHashMap<Long, GridCell> entityToGridCellMap;
     public ConcurrentHashMap<Long, Integer> entityToCollisionRadiusMap;
@@ -28,7 +30,7 @@ public class EnvironmentGrid {
      * @param gridWidth
      * @param gridHeight
      */
-    public EnvironmentGrid(int gridWidth, int gridHeight) {
+    public EnvironmentGridState(int gridWidth, int gridHeight) {
         this.gridWidth = gridWidth;
         this.gridHeight = gridHeight;
 
@@ -42,6 +44,21 @@ public class EnvironmentGrid {
 
         this.entityToGridCellMap = new ConcurrentHashMap<>();
         this.entityToCollisionRadiusMap = new ConcurrentHashMap<>();
+    }
+
+    public GridCell getCellFromHLAId(long hlaID) {
+        return this.entityToGridCellMap.get(hlaID);
+    }
+
+    public GridCell getCell(int gridX, int gridY) {
+        try {
+            this.checkGridIndex(gridX, gridY);
+            return this.gridArray[gridY][gridX];
+        } catch (PlacementException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     /**
@@ -59,10 +76,7 @@ public class EnvironmentGrid {
             throw new PlacementException("Entity with id " + hlaID + " already exists in grid");
         }
 
-        if(targetX < 0 || targetX >= this.gridWidth || targetY < 0 || targetY >= this.gridHeight) {
-            throw new PlacementException("Placement indices out of bounds (" + targetX + "," + targetY + " vs ("
-                                        + this.gridWidth + "," + this.gridHeight + ")");
-        }
+        checkGridIndex(targetX, targetY);
 
         GridCell cell = this.gridArray[targetY][targetX];
 
@@ -77,6 +91,67 @@ public class EnvironmentGrid {
         this.entityToCollisionRadiusMap.put(hlaID, collisionRadius);
         this.applyCollisions(collisionRadius, targetX, targetY, false);
 
+        return true;
+    }
+
+    public GridCell[] findPath(GridCell start, GridCell finish) {
+        AStar a = new AStar<GridCell>();
+
+        List<GridCell> path = a.pathFromGrid(this.gridArray,
+                                             new int[] {start.row, start.col},
+                                             new int[] {finish.row, finish.col});
+
+        if(!path.isEmpty()) {
+            Collections.reverse(path);
+            GridCell[] pathArray = Arrays.copyOfRange(path.toArray(), 1, path.size(), GridCell[].class);
+            return pathArray;
+        }
+
+        return null;
+    }
+
+    public boolean gridMove(long hlaID, int targetX, int targetY) throws PlacementException {
+        GridCell cell = entityToGridCellMap.get(hlaID);
+        if(cell == null) {
+            logger.error("hlaID=" + hlaID + " Not found in gridMove");
+            return false;
+        }
+
+        if(Math.abs(cell.col-targetX) > 1 || Math.abs(cell.row-targetY) > 1) {
+            logger.error("Out of bounds attempt to move from " + cell + " to " + targetX + "," + targetY);
+            return false;
+        }
+
+        checkGridIndex(targetX, targetY);
+        GridCell target = this.gridArray[targetY][targetX];
+
+        int collisionRadius = entityToCollisionRadiusMap.get(hlaID);
+        applyCollisions(collisionRadius, cell.col, cell.row, true);
+
+        //  Thread danger here, applyCollisions changes shared memory.....
+        if(hasCollisionsWithinRadius(collisionRadius, targetX, targetY)) {
+            applyCollisions(collisionRadius, cell.col, cell.row, false);
+            logger.error("Invalid attempt to move to a collision grid");
+
+            collisionRadius -= 1;
+            for(int i=-collisionRadius; i<=collisionRadius; i++) {
+                for(int j=-collisionRadius; j<=collisionRadius; j++) {
+                    int collisionX = targetX+i;
+                    int collisionY = targetY+j;
+
+                    if(collisionX < 0 || collisionX >= this.gridWidth || collisionY < 0 || collisionY >= this.gridHeight) {
+                        continue;
+                    }
+
+                    logger.debug("Collision: " + this.gridArray[collisionY][collisionX]);
+                }
+            }
+            return false;
+        }
+
+        cell.removeEntity();
+        target.placeEntity(hlaID);
+        entityToGridCellMap.put(hlaID, target);
         return true;
     }
 
@@ -134,33 +209,6 @@ public class EnvironmentGrid {
         return false;
     }
 
-
-    public List<GridCell> findPath(GridCell start, GridCell finish) {
-        ArrayList<GridCell> path = new ArrayList<>();
-
-        boolean[][] visitedNodes = new boolean[this.gridHeight][this.gridWidth];
-        Arrays.fill(visitedNodes, false);
-
-        Set<GridCell> openCells = new HashSet<>();
-        openCells.add(start);
-
-        int[][] gScore = new int[this.gridHeight][this.gridWidth];
-        Arrays.fill(gScore, -1);
-
-        gScore[start.gridY][start.gridX] = 0;
-
-        int[][] fScore = new int[this.gridHeight][this.gridWidth];
-        Arrays.fill(fScore, -1);
-
-        fScore[start.gridY][start.gridX] = (int)Math.abs(Math.sqrt(Math.pow((double)finish.gridX-start.gridX, 2.0) + Math.pow((double)finish.gridY-start.gridY, 2.0)));
-
-        while(!openCells.isEmpty()) {
-
-        }
-
-        return path;
-    }
-
     public static void printGrid(GridCell[][] grid) {
         printGridWithPath(grid, null, null, null);
     }
@@ -169,11 +217,11 @@ public class EnvironmentGrid {
      *
      * @return
      */
-    public static void printGridWithPath(GridCell[][] grid, List<GridCell> path, GridCell start, GridCell end) {
+    public static void printGridWithPath(GridCell[][] grid, GridCell[] path, GridCell start, GridCell end) {
         Set<GridCell> pathSet = new HashSet<>();
 
         if(path!=null) {
-            pathSet.addAll(path);
+            pathSet.addAll(Arrays.asList(path));
         }
 
         for(int i = 0; i < grid.length; i++) {
@@ -197,6 +245,13 @@ public class EnvironmentGrid {
             }
 
             logger.debug(sb);
+        }
+    }
+
+    public void checkGridIndex(int targetX, int targetY) throws PlacementException {
+        if(targetX < 0 || targetX >= this.gridWidth || targetY < 0 || targetY >= this.gridHeight) {
+            throw new PlacementException("Placement indices out of bounds (" + targetX + "," + targetY + " vs ("
+                    + this.gridWidth + "," + this.gridHeight + ")");
         }
     }
 
