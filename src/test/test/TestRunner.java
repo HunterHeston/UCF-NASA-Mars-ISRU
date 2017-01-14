@@ -39,6 +39,9 @@ public class TestRunner extends Canvas implements Runnable {
                 if(grid[i][j].isBlocked()) {
                     g.setColor(Color.white);
                     g.fillRect((j*cellSize) + 6, (i*cellSize) + 6, cellSize, cellSize);
+                } else if(grid[i][j].isOccupied()) {
+                    g.setColor(Color.cyan);
+                    g.drawOval((j*cellSize) + 9, (i*cellSize) + 9, cellSize-12, cellSize-12);
                 }
             }
         }

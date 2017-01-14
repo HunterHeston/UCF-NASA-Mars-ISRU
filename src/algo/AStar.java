@@ -143,8 +143,11 @@ public class AStar<T extends Object> {
     private static void getNeighborsFromGrid(Node current, Node[][] nodeGrid, ArrayList<Node> dest) {
         dest.clear();
 
-        int is = Math.max(0, ((GridCell)current.object).row-1);
-        int js = Math.max(0, ((GridCell)current.object).col-1);
+        int ic = ((GridCell)current.object).row;
+        int jc = ((GridCell)current.object).col;
+
+        int is = Math.max(0, ic-1);
+        int js = Math.max(0, jc-1);
 
         int ie = Math.min(nodeGrid.length-1, ((GridCell)current.object).row+1);
         int je = Math.min(nodeGrid[0].length-1, ((GridCell)current.object).col+1);
@@ -154,10 +157,44 @@ public class AStar<T extends Object> {
                 Node n = nodeGrid[i][j];
                 if(n == current) continue;
 
-                GridCell c = (GridCell) n.object;
-                if(!c.isBlocked() && !c.isOccupied()) {
-                    dest.add(n);
+                //  Diagonal, check adjacent diagnals too
+                if(i != ic && j != jc) {
+                    int cr1 = i > ic ? ic+1 : ic-1;
+                    int cc1 = jc;
+
+                    int cr2 = ic;
+                    int cc2 = j > jc ? jc+1 : jc-1;
+
+                    boolean cb1 = true;
+                    boolean cb2 = true;
+
+                    if(cr1 >= 0 && cr1 < nodeGrid.length && cc1 >=0 && cc1 < nodeGrid[0].length) {
+                        GridCell c = (GridCell) nodeGrid[cr1][cc1].object;
+                        if(c.isBlocked() || c.isOccupied()) {
+                            cb1 = false;
+                        }
+                    }
+
+                    if(cr2 >= 0 && cr2 < nodeGrid.length && cc2 >=0 && cc2 < nodeGrid[0].length) {
+                        GridCell c = (GridCell) nodeGrid[cr2][cc2].object;
+                        if(c.isBlocked() || c.isOccupied()) {
+                            cb2 = false;
+                        }
+                    }
+
+                    if(cb1 && cb2) {
+                        GridCell c = (GridCell) n.object;
+                        if(!c.isBlocked() && !c.isOccupied()) {
+                            dest.add(n);
+                        }
+                    }
+                } else {
+                    GridCell c = (GridCell) n.object;
+                    if(!c.isBlocked() && !c.isOccupied()) {
+                        dest.add(n);
+                    }
                 }
+
             }
         }
     }

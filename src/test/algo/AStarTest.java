@@ -191,11 +191,59 @@ public class AStarTest {
         assert path.get(0).col == 2;
         assert path.get(0).row == 0;
 
-        assert path.get(1).col == 1;
+        assert path.get(1).col == 2;
         assert path.get(1).row == 1;
 
-        assert path.get(2).col == 0;
-        assert path.get(2).row == 0;
+        assert path.get(2).col == 1;
+        assert path.get(2).row == 1;
+
+        assert path.get(3).col == 0;
+        assert path.get(3).row == 1;
+    }
+
+    @Test
+    public void cornerTest() {
+        String[] gridSource = {
+                "S B _ _ _ _ _ _ _ _ ",
+                "B E _ _ _ _ _ _ _ _ ",
+                "_ _ _ _ _ _ _ _ _ _ ",
+                "_ _ _ _ _ _ _ _ _ _ ",
+                "_ _ _ _ _ _ _ _ _ _ ",
+                "_ _ _ _ _ _ _ _ _ _ ",
+                "_ _ _ _ _ _ _ _ _ _ ",
+                "_ _ _ _ _ _ _ _ _ _ ",
+                "_ _ _ _ _ _ _ _ _ _ ",
+        };
+
+        EnvironmentGridState grid = EnvironmentGridFactory.gridFromTXT(gridSource);
+
+        GridCell start = null;
+        GridCell end = null;
+
+        for(int i = 0; i < gridSource.length/2; i++) {
+            for(int j = 0; j < gridSource[0].length()/2; j++) {
+                char sourceChar = gridSource[i].charAt(j*2);
+
+                GridCell cell = grid.gridArray[i][j];
+
+                if(sourceChar == 'S') {
+                    start = cell;
+                } else if(sourceChar == 'E') {
+                    end = cell;
+                }
+            }
+        }
+
+        AStar<GridCell> a = new AStar<>();
+        List<GridCell> path = a.pathFromGrid(grid.gridArray,
+                new int[] {start.row, start.col},
+                new int[] {end.row, end.col});
+
+        printGridWithPath(grid.gridArray, path, start, end);
+        logger.debug(path);
+
+        assert path == null;
+
     }
 
     public void printGridWithPath(GridCell[][] grid, List<GridCell> path, GridCell start, GridCell end) {
