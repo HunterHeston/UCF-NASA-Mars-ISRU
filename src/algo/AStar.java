@@ -12,12 +12,12 @@ public class AStar<T extends Object> {
     final static Logger logger = Logger.getLogger(AStar.class);
 
     private static class Node {
-        private static final int INIT_SCORE = Integer.MAX_VALUE;
+        private static final double INIT_SCORE = Double.MAX_VALUE;
 
         public Object object;
         public List<Node> neighbors;
-        public int score = INIT_SCORE;
-        public int fScore = INIT_SCORE;
+        public double score = INIT_SCORE;
+        public double fScore = INIT_SCORE;
 
         public Node(Object object) {
             this.object = object;
@@ -60,7 +60,7 @@ public class AStar<T extends Object> {
         Node endNode = nodeGrid[end[0]][end[1]];
 
         startNode.score = 0;
-        endNode.fScore = (int)Math.abs(Math.sqrt(Math.pow((double)end[0]-start[0], 2.0) + Math.pow((double)end[1]-start[1], 2.0)));
+        endNode.fScore = Math.abs(Math.sqrt(Math.pow((double)end[0]-start[0], 2.0) + Math.pow((double)end[1]-start[1], 2.0)));
 
         // Traversal map
         HashMap<Node, Node> cameFrom = new HashMap<>();
@@ -109,7 +109,7 @@ public class AStar<T extends Object> {
                 if(closedSet.contains(neighbor)) continue;
 
                 //  +1 Used for the cost of traversal
-                int tentScore = current.score + 1;
+                double tentScore = current.score + 1;
 
                 //  Newly discovered neighbor
                 if(!openSet.contains(neighbor)) {
@@ -123,7 +123,7 @@ public class AStar<T extends Object> {
                 //  Update the fScore
                 GridCell cellNeighbor = (GridCell) neighbor.object;
                 neighbor.score = tentScore;
-                neighbor.fScore = neighbor.score + (int)Math.abs(Math.sqrt(Math.pow((double)end[0]-cellNeighbor.col, 2.0) + Math.pow((double)end[1]-cellNeighbor.row, 2.0)));
+                neighbor.fScore = neighbor.score + Math.abs(Math.sqrt(Math.pow((double)end[0]-cellNeighbor.col, 2.0) + Math.pow((double)end[1]-cellNeighbor.row, 2.0)));
 
                 fScoreQueue.remove(neighbor);
                 fScoreQueue.add(neighbor);
