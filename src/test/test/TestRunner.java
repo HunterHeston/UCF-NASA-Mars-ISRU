@@ -12,12 +12,14 @@ import test.test.rover.TestRoverExecution;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferStrategy;
 
 /**
  * Created by Andrew on 1/12/2017.
  */
-public class TestRunner extends JPanel implements Runnable {
+public class TestRunner extends Canvas implements Runnable {
 
+    public static BufferStrategy strategy;
     public GridCell[][] grid;
     public TestEngine engine;
 
@@ -75,13 +77,14 @@ public class TestRunner extends JPanel implements Runnable {
     public void update() {
         this.engine.update();
 
-        Graphics g = getGraphics();
+        Graphics g = strategy.getDrawGraphics();
         clearScreen(g);
 
         drawGrid(g);
         drawEntities(g);
 
-        paintComponents(g);
+        g.dispose();
+        strategy.show();
     }
 
     public TestRunner(TestEngine engine) {
@@ -90,10 +93,6 @@ public class TestRunner extends JPanel implements Runnable {
     }
 
     public static void main(String[] args) throws Exception {
-        JFrame frame = new JFrame("UCF - Mars Sim Test Runner");
-        frame.setSize(new Dimension(530, 600));
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
         String[] gridSource = {
                 "R _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ",
                 "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ",
@@ -123,11 +122,27 @@ public class TestRunner extends JPanel implements Runnable {
         TestEngine engine = new TestEngine(gridExecution);
 
         extractEntitiesFromTXT(gridSource, engine);
-
         TestRunner runner = new TestRunner(engine);
-        frame.getContentPane().add(runner);
 
+        JFrame frame = new JFrame("UCF - Mars Sim Test Runner");
+        JPanel panel = (JPanel) frame.getContentPane();
+        panel.setPreferredSize(new Dimension(530, 600));
+        panel.setLayout(null);
+
+        runner.setBounds(0, 0, 530, 600);
+        panel.add(runner);
+
+        runner.setIgnoreRepaint(true);
+
+        frame.pack();
+        frame.setResizable(false);
         frame.setVisible(true);
+
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        runner.createBufferStrategy(2);
+        strategy = runner.getBufferStrategy();
+
         Thread thread = new Thread(runner);
         thread.start();
     }
