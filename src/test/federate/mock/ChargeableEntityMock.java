@@ -15,8 +15,8 @@ public class ChargeableEntityMock extends SimulationEntityMock {
     }
 
     @Override
-    public void update() {
-        super.update();
+    public void passiveUpdate() {
+        super.passiveUpdate();
 
         ChargeableEntity chargeableEntity = (ChargeableEntity) this.entityExecution.simulationEntity;
         ChargeableEntityExecution entityExecution = (ChargeableEntityExecution) this.entityExecution;

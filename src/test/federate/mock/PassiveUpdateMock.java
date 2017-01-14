@@ -14,9 +14,9 @@ public abstract class PassiveUpdateMock {
     }
 
     /**
-     * Drive passive update callbacks from this method.
+     * Drive passive passiveUpdate callbacks from this method.
      * Infer the correct callback from the entity state.
      */
-    public abstract void update();
+    public abstract void passiveUpdate();
 
 }

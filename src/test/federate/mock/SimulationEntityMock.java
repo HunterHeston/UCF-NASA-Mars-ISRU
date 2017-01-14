@@ -11,7 +11,7 @@ import java.util.LinkedList;
 /**
  *
  * This class will facilitate the testing of entity logic, without the need to run
- * the test as an HLA application.  This is accomplished through the update method,
+ * the test as an HLA application.  This is accomplished through the passiveUpdate method,
  * which should be overriden by child classes.
  *
  * Created by Andrew on 1/13/2017.
@@ -32,19 +32,19 @@ public class SimulationEntityMock extends PassiveUpdateMock {
 
     /**
      *
-     * This method represents an update during the passive update cycle.  Because this
+     * This method represents an passiveUpdate during the passive passiveUpdate cycle.  Because this
      * class aims to remove the dependence on HLA for testing, there are no interactions.
      * Instead the handling of interactions can be emulated by inferring which callbacks
      * to the SimulationEntityExecution should be made.
      *
      * This class is called directly after the active updates are made to the entity.  This
      * class should be overriden to test higher level behavior logic, however a call to
-     * super.update() MUST be called at the beginning of each overriden instance of this method,
+     * super.passiveUpdate() MUST be called at the beginning of each overriden instance of this method,
      * otherwise, movement will not work.
      *
      */
     @Override
-    public void update() {
+    public void passiveUpdate() {
         if(this.entityExecution.simulationEntity.movementState ==
                 SimulationEntity.MovementState.PathFinding) {
 

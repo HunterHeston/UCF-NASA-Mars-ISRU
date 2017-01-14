@@ -1,12 +1,9 @@
 package test.federate.mock;
 
-import entity.ChargeableEntity;
-import execution.ChargeableEntityExecution;
 import execution.EnvironmentGridExecution;
 import execution.SimulationEntityExecution;
 import test.test.rover.TestChargeableRover;
 import test.test.rover.TestChargeableRoverExecution;
-import test.test.rover.TestRover;
 
 import java.util.Random;
 
@@ -21,8 +18,8 @@ public class TestChargeableRoverMock extends ChargeableEntityMock {
     }
 
     @Override
-    public void update() {
-        super.update();
+    public void passiveUpdate() {
+        super.passiveUpdate();
 
         TestChargeableRover rover = (TestChargeableRover) this.entityExecution.simulationEntity;
         TestChargeableRoverExecution roverExecution = (TestChargeableRoverExecution) this.entityExecution;

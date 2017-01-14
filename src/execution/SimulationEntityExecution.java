@@ -53,7 +53,7 @@ public class SimulationEntityExecution {
     /**
      *
      * This method makes any necessary movement related state transitions and data updates
-     * during the active update phase.  This includes calls to HLA when necessary (TODO)
+     * during the active passiveUpdate phase.  This includes calls to HLA when necessary (TODO)
      * as well as direct updates to the position vector.
      *
      */
@@ -80,7 +80,7 @@ public class SimulationEntityExecution {
 
     /**
      *
-     * This method is called at the end of the active update cycle, and should be overriden
+     * This method is called at the end of the active passiveUpdate cycle, and should be overriden
      * by inheriting child classes as needed.
      *
      */
@@ -89,7 +89,7 @@ public class SimulationEntityExecution {
 
     /**
      *
-     * This method is called during the active update cycle iff the entity is stopped.  This method
+     * This method is called during the active passiveUpdate cycle iff the entity is stopped.  This method
      * should be overriden by child classes, to create higher level entity logic.
      *
      */

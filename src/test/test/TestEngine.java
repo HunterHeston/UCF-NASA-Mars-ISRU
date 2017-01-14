@@ -61,7 +61,7 @@ public class TestEngine {
             execution.activeUpdate();
             SimulationEntityMock mock = mockMap.get(execution);
             if(mock != null) {
-                mock.update();
+                mock.passiveUpdate();
             }
         }
     }

@@ -21,13 +21,13 @@ public class TestRoverMock extends SimulationEntityMock {
     }
 
     @Override
-    public void update() {
-        super.update();
+    public void passiveUpdate() {
+        super.passiveUpdate();
 
         TestRover rover = (TestRover) this.entityExecution.simulationEntity;
         TestRoverExecution roverExecution = (TestRoverExecution) this.entityExecution;
 
-        //  In the passive update phase, we are looking for a rover state of WaitingForPlace.
+        //  In the passive passiveUpdate phase, we are looking for a rover state of WaitingForPlace.
         //  This state means that we are waiting for an interaction containing a new location.
         //  Once we are in that state, go ahead and make the appropriate callbacks, to emulate
         //  the receipt of a PickPlacementResponseInteraction

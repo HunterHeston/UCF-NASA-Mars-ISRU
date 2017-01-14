@@ -49,6 +49,7 @@ public class SimulationEntity {
         }
 
     }
+
     public MovementState movementState = MovementState.Stopped;
 
     public GridIndex gridIndex;

@@ -11,6 +11,11 @@ public class ChargeableEntityExecution extends SimulationEntityExecution {
         super(simulationEntity);
     }
 
+    /**
+     *
+     * Re-Implement activeUpdate, to kill the entity when the battery dies.
+     *
+     */
     @Override
     public void activeUpdate() {
         ChargeableEntity entity = (ChargeableEntity) this.simulationEntity;
@@ -24,8 +29,11 @@ public class ChargeableEntityExecution extends SimulationEntityExecution {
                     entity.chargeState == ChargeableEntity.ChargeState.Null) {
                 this.activeEntityUpdate();
             } else {
+                //  Chargeable Entity is in control
                 if(entity.chargeState == ChargeableEntity.ChargeState.TransitToISRU &&
                         entity.movementState == SimulationEntity.MovementState.Stopped)  {
+
+                    //  We should be at the ISRU, try and connect
                     entity.attemptConnectToISRU();
                 } else if(entity.chargeState == ChargeableEntity.ChargeState.Charging && entity.chargeFull()) {
                     entity.disconnectFromISRU();
