@@ -1,4 +1,4 @@
-package federate;
+package execution;
 
 import entity.SimulationEntity;
 import org.apache.log4j.Logger;
@@ -99,7 +99,7 @@ public class SimulationEntityExecution {
 
     /**
      *
-     * This method is called when a PathFindingInteractionResponse is received by the federate.
+     * This method is called when a PathFindingInteractionResponse is received by the execution.
      *
      * @param path
      *
@@ -115,7 +115,7 @@ public class SimulationEntityExecution {
 
     /**
      *
-     * This method is called when a GridMovementInteractionResponse is received by the federate
+     * This method is called when a GridMovementInteractionResponse is received by the execution
      *
      * @param success
      */

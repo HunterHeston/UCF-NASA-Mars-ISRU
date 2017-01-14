@@ -1,7 +1,7 @@
 package test.federate;
 
 import entity.SimulationEntity;
-import federate.SimulationEntityExecution;
+import execution.SimulationEntityExecution;
 import org.junit.Test;
 
 import java.util.LinkedList;

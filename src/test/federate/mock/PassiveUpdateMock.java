@@ -1,6 +1,6 @@
 package test.federate.mock;
 
-import federate.SimulationEntityExecution;
+import execution.SimulationEntityExecution;
 
 /**
  * Created by Andrew on 1/13/2017.

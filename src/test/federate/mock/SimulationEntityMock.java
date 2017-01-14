@@ -2,8 +2,8 @@ package test.federate.mock;
 
 import entity.SimulationEntity;
 import environment.GridCell;
-import federate.EnvironmentGridExecution;
-import federate.SimulationEntityExecution;
+import execution.EnvironmentGridExecution;
+import execution.SimulationEntityExecution;
 import org.apache.log4j.Logger;
 
 import java.util.LinkedList;

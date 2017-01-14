@@ -33,7 +33,7 @@ public class GridTest {
 //
 //                // 3. The Federate joins into the Federation execution
 //                super.joinIntoFederationExecution();
-//                log("Joined federate execution");
+//                log("Joined execution execution");
 //
 //                // 4. Subscribe the Subject
 //                super.subscribeSubject(this);
@@ -50,7 +50,7 @@ public class GridTest {
 //                try {
 //                    this.doPlaceEntity(1, 4, 4, 2);
 //
-//                    System.out.println("Press any key to disconnect the federate from the federation execution");
+//                    System.out.println("Press any key to disconnect the execution from the federation execution");
 //                    new Scanner(System.in).next();
 //
 //                    stopExecution();

@@ -1,8 +1,8 @@
 package test.test;
 
 import entity.EnvironmentGridEntity;
-import federate.EnvironmentGridExecution;
-import federate.SimulationEntityExecution;
+import execution.EnvironmentGridExecution;
+import execution.SimulationEntityExecution;
 import org.apache.log4j.Logger;
 import siso.smackdown.utilities.Vector3;
 import test.federate.mock.SimulationEntityMock;
