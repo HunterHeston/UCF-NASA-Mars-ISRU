@@ -35,11 +35,10 @@ public abstract class ChargeableEntity extends SimulationEntity {
     public ChargeState chargeState = ChargeState.Null;
     public GridIndex isruIndex;
 
-    public ChargeableEntity(int gridX, int gridY, int isruGridX, int isruGridY) {
-        super(gridX, gridY);
+    public ChargeableEntity(int gridX, int gridY, int isruGridX, int isruGridY, double movementSpeed, double gridCellSize) {
+        super(gridX, gridY, movementSpeed, gridCellSize);
         this.isruIndex = new GridIndex(isruGridX, isruGridY);
     }
-
 
     /**
      * @return true when the entity is dead
@@ -72,6 +71,8 @@ public abstract class ChargeableEntity extends SimulationEntity {
      */
     public abstract void useCharge();
 
+    public abstract Object getCharge();
+
     public void handleCharge() {
         assert this.chargeState == ChargeState.Null;
 
@@ -103,13 +104,9 @@ public abstract class ChargeableEntity extends SimulationEntity {
         logger.debug("Charge State Transition: WaitingConnectionResponse|WaitingForPort -> Charging");
     }
 
-    public void charge(Object chargeAmount) {
+    public void disconnectFromISRU() {
         assert this.chargeState == ChargeState.Charging;
-        this.doCharge(chargeAmount);
-
-        if(this.chargeFull()) {
-            this.chargeState = ChargeState.Null;
-            logger.debug("Charge State Transition: Charging -> Null");
-        }
+        this.chargeState = ChargeState.Null;
+        logger.debug("Charge State Transition: Charging -> Null");
     }
 }

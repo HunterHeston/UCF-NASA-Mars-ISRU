@@ -9,10 +9,10 @@ public class SimpleChargeableEntity extends ChargeableEntity {
 
     public SimpleChargeableEntity(int gridX, int gridY,
                                   int isruGridX, int isruGridY,
-                                  double capacity) {
-        super(gridX, gridY, isruGridX, isruGridY);
+                                  double capacity, double movementSpeed, double gridCellSize) {
+        super(gridX, gridY, isruGridX, isruGridY, movementSpeed, gridCellSize);
         this.capacity = capacity;
-        this.currentCharge = 0.0;
+        this.currentCharge = capacity;
     }
 
     @Override
@@ -37,7 +37,7 @@ public class SimpleChargeableEntity extends ChargeableEntity {
 
     @Override
     public boolean needsCharge() {
-        return this.currentCharge < this.capacity * 0.2;
+        return this.currentCharge < this.capacity * 0.5;
     }
 
     @Override
@@ -49,8 +49,13 @@ public class SimpleChargeableEntity extends ChargeableEntity {
     public void useCharge() {
         if(this.chargeState != ChargeState.Charging) {
             if(this.movementState == MovementState.InMotion) {
-                this.currentCharge = Math.max(0.0, this.currentCharge-0.2);
+                this.currentCharge = Math.max(0.0, this.currentCharge-0.05);
             }
         }
+    }
+
+    @Override
+    public Object getCharge() {
+        return this.currentCharge;
     }
 }

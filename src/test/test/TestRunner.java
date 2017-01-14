@@ -5,8 +5,12 @@ import environment.EnvironmentGridFactory;
 import environment.GridCell;
 import execution.EnvironmentGridExecution;
 import execution.SimulationEntityExecution;
+import org.apache.log4j.Logger;
 import siso.smackdown.utilities.Vector3;
+import test.federate.mock.TestChargeableRoverMock;
 import test.federate.mock.TestRoverMock;
+import test.test.rover.TestChargeableRover;
+import test.test.rover.TestChargeableRoverExecution;
 import test.test.rover.TestRover;
 import test.test.rover.TestRoverExecution;
 
@@ -18,6 +22,7 @@ import java.awt.image.BufferStrategy;
  * Created by Andrew on 1/12/2017.
  */
 public class TestRunner extends Canvas implements Runnable {
+    final static Logger logger = Logger.getLogger(TestRunner.class);
 
     public static BufferStrategy strategy;
     public GridCell[][] grid;
@@ -44,7 +49,7 @@ public class TestRunner extends Canvas implements Runnable {
 
     public void drawEntities(Graphics g) {
         for(SimulationEntityExecution execution : this.engine.entities) {
-            if(execution instanceof TestRoverExecution){
+            if(execution instanceof TestChargeableRoverExecution){
                 g.setColor(Color.red);
                 int cellSize = 500 / grid.length;
 
@@ -63,6 +68,13 @@ public class TestRunner extends Canvas implements Runnable {
                         execution.simulationEntity.finalGridIndex.col*cellSize+6,
                         execution.simulationEntity.finalGridIndex.row*cellSize+cellSize+6);
 
+                g.setColor(Color.green);
+
+                TestChargeableRover rover = (TestChargeableRover) execution.simulationEntity;
+                g.fillRect(rover.isruIndex.col*cellSize+9, rover.isruIndex.col*cellSize+9, cellSize-6, cellSize-6);
+
+                g.setColor(Color.white);
+                g.drawString("" + rover.getCharge(), 50, 550);
 
             }
         }
@@ -106,9 +118,9 @@ public class TestRunner extends Canvas implements Runnable {
 
     public static void main(String[] args) throws Exception {
         String[] gridSource = {
-                "R _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ",
                 "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ",
                 "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ",
+                "_ _ R _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ",
                 "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ",
                 "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ",
                 "B B B B B _ B B B _ _ _ _ _ _ _ _ _ _ _ ",
@@ -166,11 +178,12 @@ public class TestRunner extends Canvas implements Runnable {
             for(int j=0; j < gridSource[0].length()/2; j++) {
                 char c = gridSource[i].charAt(j*2);
                 if(c == 'R') {
-                    TestRover rover = new TestRover(j, i, 0.2, 1.0);
-                    TestRoverExecution execution = new TestRoverExecution(rover);
-                    TestRoverMock mock = new TestRoverMock(hlaID, execution, engine.gridExecution);
+                    TestChargeableRover rover = new TestChargeableRover(j, i, 8, 7, 20.0, 0.2, 1.0);
+                    TestChargeableRoverExecution execution = new TestChargeableRoverExecution(rover);
+                    TestChargeableRoverMock mock = new TestChargeableRoverMock(hlaID, execution, engine.gridExecution);
 
                     engine.addEntity(hlaID, 1, execution, mock);
+                    logger.debug("Added entity: " + hlaID);
 
                     hlaID++;
                 }
