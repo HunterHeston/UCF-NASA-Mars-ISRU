@@ -54,8 +54,8 @@ public class SimulationEntityMock extends PassiveUpdateMock {
 
             this.entityExecution.receiveGridMovementInteractionResponse(
                     this.gridExecution.receiveGridMoveInteraction(hlaID,
-                            this.entityExecution.simulationEntity.targetGridIndex.row,
-                            this.entityExecution.simulationEntity.targetGridIndex.col));
+                            this.entityExecution.simulationEntity.targetGridIndex.col,
+                            this.entityExecution.simulationEntity.targetGridIndex.row));
         }
     }
 }
