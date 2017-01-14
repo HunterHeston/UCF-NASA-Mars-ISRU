@@ -65,7 +65,7 @@ public class SimulationEntityExecution {
                 this.simulationEntity.isOnNewPath = false;
             } else {
                 boolean targetArrival = this.simulationEntity.moveTowardsTarget();
-                logger.debug("In motion and moved towards target arrived=" + targetArrival + " new pos=" + simulationEntity.position[0] + "," + simulationEntity.position[1]);
+                //logger.debug("In motion and moved towards target arrived=" + targetArrival + " new pos=" + simulationEntity.position[0] + "," + simulationEntity.position[1]);
 
                 if (targetArrival) {
                     if (!this.simulationEntity.path.isEmpty()) {

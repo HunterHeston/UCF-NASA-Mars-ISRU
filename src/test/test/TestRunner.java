@@ -60,7 +60,7 @@ public class TestRunner extends JPanel implements Runnable {
         while(true) {
             try {
                 update();
-                Thread.sleep(200);
+                Thread.sleep(100);
             } catch(Exception e) {
 
             }
