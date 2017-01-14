@@ -7,7 +7,7 @@ import execution.EnvironmentGridExecution;
 import execution.SimulationEntityExecution;
 import org.apache.log4j.Logger;
 import siso.smackdown.utilities.Vector3;
-import test.federate.passive.PassiveChargeableRover;
+import test.test.passive.PassiveDummyRover;
 import state.DummyRoverState;
 import execution.DummyRoverExecution;
 
@@ -177,7 +177,7 @@ public class TestRunner extends Canvas implements Runnable {
                 if(c == 'R') {
                     DummyRoverState rover = new DummyRoverState(j, i, 8, 7, 20.0, 0.2, 1.0);
                     DummyRoverExecution execution = new DummyRoverExecution(rover);
-                    PassiveChargeableRover mock = new PassiveChargeableRover(hlaID, execution, engine.gridExecution);
+                    PassiveDummyRover mock = new PassiveDummyRover(hlaID, execution, engine.gridExecution);
 
                     engine.addEntity(hlaID, 1, execution, mock);
                     logger.debug("Added state: " + hlaID);

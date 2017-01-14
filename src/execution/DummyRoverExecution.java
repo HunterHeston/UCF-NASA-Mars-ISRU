@@ -27,10 +27,10 @@ public class DummyRoverExecution extends ChargeableEntityExecution {
     public void activeEntityUpdate() {
         DummyRoverState rover = (DummyRoverState) this.simulationEntityState;
 
-        if(rover.testRoverState == DummyRoverState.TestRoverState.Standby) {
+        if(rover.roverState == DummyRoverState.RoverState.Standby) {
             rover.standby();
         } else if(this.simulationEntityState.movementState == SimulationEntityState.MovementState.Stopped
-                && rover.testRoverState == DummyRoverState.TestRoverState.GoingToPlace) {
+                && rover.roverState == DummyRoverState.RoverState.GoingToPlace) {
             rover.atPlace();
         }
     }

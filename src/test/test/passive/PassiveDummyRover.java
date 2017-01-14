@@ -1,4 +1,4 @@
-package test.federate.passive;
+package test.test.passive;
 
 import execution.EnvironmentGridExecution;
 import execution.SimulationEntityExecution;
@@ -10,9 +10,9 @@ import java.util.Random;
 /**
  * Created by rick on 1/13/17.
  */
-public class PassiveChargeableRover extends PassiveChargeableEntityPassive {
-    public PassiveChargeableRover(long hlaID, SimulationEntityExecution entityExecution,
-                                  EnvironmentGridExecution gridExecution) {
+public class PassiveDummyRover extends PassiveChargeableEntity {
+    public PassiveDummyRover(long hlaID, SimulationEntityExecution entityExecution,
+                             EnvironmentGridExecution gridExecution) {
 
         super(hlaID, entityExecution, gridExecution);
     }
@@ -32,12 +32,16 @@ public class PassiveChargeableRover extends PassiveChargeableEntityPassive {
      */
     @Override
     public void passiveUpdate() {
+        //  THIS MUST BE THE FIRST LINE
         super.passiveUpdate();
 
         DummyRoverState rover = (DummyRoverState) this.entityExecution.simulationEntityState;
         DummyRoverExecution roverExecution = (DummyRoverExecution) this.entityExecution;
 
-        if(rover.testRoverState == DummyRoverState.TestRoverState.WaitingForPlace) {
+        //  If we are waiting for a place, we would normally receive an interaction containing it.
+        //  Rather than receive an interaction, we create the place ourselves, and make the same
+        //  method call (roverExecution.receivePickPlaceResponse) as if we had received the interaction
+        if(rover.roverState == DummyRoverState.RoverState.WaitingForPlace) {
             int newX, newY;
 
             Random r = new Random(System.currentTimeMillis());
@@ -45,11 +49,13 @@ public class PassiveChargeableRover extends PassiveChargeableEntityPassive {
             newX = (int)(r.nextDouble() * gridExecution.gridWidth) % this.gridExecution.grid.gridArray[0].length;
             newY = (int)(r.nextDouble() * gridExecution.gridHeight) % this.gridExecution.grid.gridArray.length;
 
-            while(gridExecution.grid.gridArray[newY][newX].isBlocked()) {
+            //  Skip blocked and occupied places
+            while(gridExecution.grid.gridArray[newY][newX].isBlocked() || gridExecution.grid.gridArray[newY][newX].isOccupied()) {
                 newX = (int)(r.nextDouble() * gridExecution.gridWidth) % this.gridExecution.grid.gridArray[0].length;
                 newY = (int)(r.nextDouble() * gridExecution.gridHeight) % this.gridExecution.grid.gridArray.length;
             }
 
+            //  Pretend to receive an interaction
             roverExecution.receivePickPlaceResponse(newX, newY);
         }
     }

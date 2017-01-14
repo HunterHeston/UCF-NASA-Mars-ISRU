@@ -1,4 +1,4 @@
-package test.federate.passive;
+package test.test.passive;
 
 import execution.SimulationEntityExecution;
 

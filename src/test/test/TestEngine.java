@@ -5,7 +5,7 @@ import execution.EnvironmentGridExecution;
 import execution.SimulationEntityExecution;
 import org.apache.log4j.Logger;
 import siso.smackdown.utilities.Vector3;
-import test.federate.passive.PassiveSimulationEntity;
+import test.test.passive.PassiveSimulationEntity;
 
 import java.util.ArrayList;
 import java.util.HashMap;

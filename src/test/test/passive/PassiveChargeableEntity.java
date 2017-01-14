@@ -1,4 +1,4 @@
-package test.federate.passive;
+package test.test.passive;
 
 import state.ChargeableEntityState;
 import execution.ChargeableEntityExecution;
@@ -8,9 +8,9 @@ import execution.SimulationEntityExecution;
 /**
  * Created by rick on 1/13/17.
  */
-public class PassiveChargeableEntityPassive extends PassiveSimulationEntity {
-    public PassiveChargeableEntityPassive(long hlaID, SimulationEntityExecution entityExecution,
-                                          EnvironmentGridExecution gridExecution) {
+public class PassiveChargeableEntity extends PassiveSimulationEntity {
+    public PassiveChargeableEntity(long hlaID, SimulationEntityExecution entityExecution,
+                                   EnvironmentGridExecution gridExecution) {
         super(hlaID, entityExecution, gridExecution);
     }
 
