@@ -7,6 +7,9 @@ import test.test.rover.TestRover;
 import test.test.rover.TestRoverExecution;
 
 /**
+ *
+ * This is an example of a Mock for a simple rover.
+ *
  * Created by Andrew on 1/13/2017.
  */
 public class TestRoverMock extends SimulationEntityMock {
@@ -24,6 +27,10 @@ public class TestRoverMock extends SimulationEntityMock {
         TestRover rover = (TestRover) this.entityExecution.simulationEntity;
         TestRoverExecution roverExecution = (TestRoverExecution) this.entityExecution;
 
+        //  In the passive update phase, we are looking for a rover state of WaitingForPlace.
+        //  This state means that we are waiting for an interaction containing a new location.
+        //  Once we are in that state, go ahead and make the appropriate callbacks, to emulate
+        //  the receipt of a PickPlacementResponseInteraction
         if(rover.testRoverState == TestRover.TestRoverState.WaitingForPlace) {
             int newX, newY;
             newX = (rover.gridIndex.col + 5) % this.gridExecution.grid.gridArray[0].length;

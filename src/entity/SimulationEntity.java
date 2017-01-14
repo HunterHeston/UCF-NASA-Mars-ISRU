@@ -5,6 +5,14 @@ import org.apache.log4j.Logger;
 import java.util.Queue;
 
 /**
+ *
+ * This is the base class for all entities within the simulation.
+ * An entity class acts to encapsulate data pertaining to the entity.
+ * An entity class also provides methods to transition between states.
+ * Each of these state transition methods should strictly enforce state
+ * sequences, preferring runtime errors (via assertion) as an enforcement
+ * method.
+ *
  * Created by Andrew on 1/9/2017.
  */
 public class SimulationEntity {
