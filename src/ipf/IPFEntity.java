@@ -4,6 +4,8 @@ import java.util.Queue;
 
 import org.apache.log4j.Logger;
 
+import ipf.IPFEntity.ProcessingState;
+import ipf.IPFEntity.RegolithState;
 import siso.smackdown.utilities.Vector3;
 
 public class IPFEntity {
@@ -73,6 +75,14 @@ public class IPFEntity {
 
 	public IPFEntity(){
 		
+	}
+
+	public void changeProcessingState(ProcessingState s) {
+		this.processingState = s;
+	}
+
+	public void changeRegolithState(RegolithState s) {
+		this.regolithState = s;
 	}
 
 }

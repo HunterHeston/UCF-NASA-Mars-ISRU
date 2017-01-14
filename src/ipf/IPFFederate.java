@@ -7,6 +7,8 @@ import java.util.Observer;
 import java.util.Scanner;
 
 import hla.rti1516e.exceptions.*;
+import ipf.IPFEntity.ProcessingState;
+import ipf.IPFEntity.RegolithState;
 import siso.smackdown.FrameType;
 import siso.smackdown.utilities.Vector3;
 import skf.config.Configuration;
@@ -53,65 +55,113 @@ public class IPFFederate extends SEEAbstractFederate implements Observer {
 
 	@Override
 	protected void doAction() {
-		// TODO Auto-generated method stub
-		
-		switch(ipf.chargeState){
-		case NULL:
-			break;
-		case NoPorts:
-			break;
-		case OpenPorts:
-			break;
-		default:
-			break;
-		}
 		
 		switch(ipf.regolithState){
-		case Depositing:
-			break;
-		case Loading:
-			break;
 		case NULL:
+			if(ipf.processingState == ProcessingState.WaitingForRegolith){
+				ipf.changeRegolithState(RegolithState.WaitingForDeposit);
+			}
+			break;
+		case Depositing:
+			if(ipf.amountUnprocessedRegolith == 0.0){
+				//Send DepositRegolithResponse
+				ipf.changeRegolithState(RegolithState.WaitingForDeposit);
+			} else if (ipf.amountUnprocessedRegolith > 0.0){
+				//Send LoadRegolithResponse
+				ipf.changeRegolithState(RegolithState.Processing);
+			}
 			break;
 		case Processing:
+			if(ipf.amountUnprocessedRegolith > 0.0 &&
+					ipf.amountUnprocessedRegolith < ipf.maxUnprocessedRegolithCapacity){
+				// Process Regolith
+				ipf.changeRegolithState(RegolithState.ProcessingAndWaitingForDeposit);
+			} else if (ipf.amountProcessedRegolith == ipf.maxProcessedRegolithCapacity ||
+					ipf.amountUnprocessedRegolith == 0.0){
+				ipf.changeRegolithState(RegolithState.WaitingForLoad);
+			} else {
+				// Process Regolith
+			}
 			break;
 		case ProcessingAndWaitingForDeposit:
+			if (ipf.amountProcessedRegolith == ipf.maxProcessedRegolithCapacity || 
+					ipf.amountUnprocessedRegolith == 0.0){
+				ipf.changeRegolithState(RegolithState.WaitingForLoad);
+			}
 			break;
-		case WaitingForDeposit:
-			break;
-		case WaitingForLoad:
+		case Loading:
+			//Send LoadRegolithResponse
+			ipf.changeRegolithState(RegolithState.NULL);
 			break;
 		default:
 			break;
 		}
 		
 		switch(ipf.processingState){
-		case HaveRegolith:
-			break;
-		case HaveResources:
-			break;
-		case HaveWater:
-			break;
 		case NULL:
-			break;
-		case NeedCarbonDioxide:
-			break;
-		case NeedHydrogen:
-			break;
-		case NeedHydrogenAndCarbonDioxide:
-			break;
-		case NeedRegolith:
-			break;
-		case NeedResources:
-			break;
-		case NeedWater:
+			if(ipf.storageIsFull()){
+				ipf.changeProcessingState(ProcessingState.StorageFull);
+			} else {
+				ipf.changeProcessingState(ProcessingState.StorageNotFull);
+			}
 			break;
 		case StorageFull:
+			// This may be able to be removed if nothing needs to be done here
 			break;
 		case StorageNotFull:
+			if(ipf.resourcesAvailable()){
+				ipf.changeProcessingState(ProcessingState.HaveResources);
+			} else {
+				ipf.changeProcessingState(ProcessingState.NeedResources);
+			}
 			break;
-		case WaitingForRegolith:
+		case NeedResources:
+			if(ipf.hasEnoughHydrogen()){
+				ipf.changeProcessingState(ProcessingState.NeedCarbonDioxide);
+			} else if(ipf.hasEnoughCarbonDioxide()){
+				ipf.changeProcessingState(ProcessingState.NeedHydrogen);
+			} else {
+				ipf.changeProcessingState(ProcessingState.NeedHydrogenAndCarbonDioxide);
+			}
 			break;
+		case NeedCarbonDioxide:
+			if(ipf.hasEnoughCarbonDioxide()){
+				ipf.changeProcessingState(ProcessingState.StorageNotFull);
+			} else {
+				ipf.processAtmosphere();
+			}
+			break;
+		case NeedHydrogenAndCarbonDioxide:
+			if(ipf.hasEnoughCarbonDioxide()){
+				ipf.changeProcessingState(ProcessingState.NeedHydrogen);
+			} else {
+				ipf.processAtmosphere();
+			}
+			break;
+		case NeedHydrogen:
+			if(ipf.hasEnoughWater()){
+				ipf.changeProcessingState(ProcessingState.HaveWater);
+			} else {
+				ipf.changeProcessingState(ProcessingState.NeedWater);
+			}
+			break;
+		case HaveWater:
+			ipf.electrolysis();
+			ipf.changeProcessingState(ProcessingState.StorageNotFull);
+			break;
+		case NeedWater:
+			if(ipf.hasEnoughRegolith()){
+				ipf.changeProcessingState(ProcessingState.HaveRegolith);
+			} else {
+				ipf.changeProcessingState(ProcessingState.NeedRegolith);
+			}
+			break;
+		case HaveRegolith:
+			ipf.regolithExtraction();
+			ipf.changeProcessingState(ProcessingState.NeedHydrogen);
+			break;
+		case NeedRegolith:
+			ipf.changeProcessingState(ProcessingState.WaitingForRegolith);
 		default:
 			break;
 		}
@@ -129,7 +179,6 @@ public class IPFFederate extends SEEAbstractFederate implements Observer {
 
 	@Override
 	public void update(Observable o, Object arg) {
-		// TODO Auto-generated method stub
 		System.out.println("Update test");
 		System.out.println(arg);
 	}
