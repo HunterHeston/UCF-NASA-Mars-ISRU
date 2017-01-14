@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
  */
 public class DummyRoverExecution extends ChargeableEntityExecution {
     final static Logger logger = Logger.getLogger(DummyRoverExecution.class);
-    
+
     public DummyRoverExecution(ChargeableEntityState entityState) {
         super(entityState);
     }
