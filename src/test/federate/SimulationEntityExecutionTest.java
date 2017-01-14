@@ -14,7 +14,7 @@ public class SimulationEntityExecutionTest {
 
     @Test
     public void movementTest() {
-        SimulationEntityState simulationEntityState = new SimulationEntityState(0, 0, 0.2, 1.0);
+        SimulationEntityState simulationEntityState = new SimulationEntityState(0, 0, 0, 0.2, 1.0);
         SimulationEntityExecution entityExecution = new SimulationEntityExecution(simulationEntityState);
 
         assert simulationEntityState.movementState == SimulationEntityState.MovementState.Stopped;
@@ -46,7 +46,7 @@ public class SimulationEntityExecutionTest {
 
     @Test
     public void failedMovementTest() {
-        SimulationEntityState simulationEntityState = new SimulationEntityState(0, 0, 0.2, 1.0);
+        SimulationEntityState simulationEntityState = new SimulationEntityState(0,0, 0, 0.2, 1.0);
         SimulationEntityExecution entityExecution = new SimulationEntityExecution(simulationEntityState);
 
         assert simulationEntityState.movementState == SimulationEntityState.MovementState.Stopped;

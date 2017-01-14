@@ -31,11 +31,11 @@ public class DummyRoverState extends SimpleChargeableEntityState {
      * @param movementSpeed
      * @param gridCellSize
      */
-    public DummyRoverState(int gridX, int gridY, int isruGridX,
+    public DummyRoverState(long identifier, int gridX, int gridY, int isruGridX,
                            int isruGridY, double batteryCapacity,
                            double movementSpeed, double gridCellSize) {
 
-        super(gridX, gridY, isruGridX, isruGridY, batteryCapacity, movementSpeed, gridCellSize);
+        super(identifier, gridX, gridY, isruGridX, isruGridY, batteryCapacity, movementSpeed, gridCellSize);
     }
 
     /**
@@ -88,5 +88,9 @@ public class DummyRoverState extends SimpleChargeableEntityState {
         this.roverState = RoverState.Standby;
         logger.debug("Chargeable Test Rover State Transition: GoingToPlace -> Standby");
 
+    }
+
+    public String toString() {
+        return super.toString() + String.format(" %s", this.roverState);
     }
 }

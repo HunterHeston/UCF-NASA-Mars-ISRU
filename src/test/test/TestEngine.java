@@ -33,14 +33,6 @@ public class TestEngine {
         mockMap = new HashMap<>();
     }
 
-    public TestEngine() {
-        gridExecution = new EnvironmentGridExecution(new Vector3(), 1.0, 10, 10);
-        gridEntity = gridExecution.grid;
-
-        entities = new ArrayList<>();
-        mockMap = new HashMap<>();
-    }
-
     public void addEntity(long hlaID, int collisionRadius,
                           SimulationEntityExecution execution,
                           PassiveSimulationEntity mock) {

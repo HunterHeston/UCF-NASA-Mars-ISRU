@@ -15,7 +15,7 @@ public class SimulationEntityStateTest {
 
     @Test
     public void stateTransitionTest() throws Exception {
-        SimulationEntityState entity = new SimulationEntityState(0, 0, 2.0, 1.0);
+        SimulationEntityState entity = new SimulationEntityState(0, 0, 0, 2.0, 1.0);
         assert entity.movementState == SimulationEntityState.MovementState.Stopped;
 
         entity.beginPathFinding(1, 1);
@@ -82,7 +82,7 @@ public class SimulationEntityStateTest {
 
     @Test
     public void failureTest() throws Exception {
-        SimulationEntityState entity = new SimulationEntityState(0, 0);
+        SimulationEntityState entity = new SimulationEntityState(0,0, 0);
         assert entity.movementState == SimulationEntityState.MovementState.Stopped;
 
 

@@ -35,8 +35,8 @@ public abstract class ChargeableEntityState extends SimulationEntityState {
     public ChargeState chargeState = ChargeState.Null;
     public GridIndex isruIndex;
 
-    public ChargeableEntityState(int gridX, int gridY, int isruGridX, int isruGridY, double movementSpeed, double gridCellSize) {
-        super(gridX, gridY, movementSpeed, gridCellSize);
+    public ChargeableEntityState(long identifier, int gridX, int gridY, int isruGridX, int isruGridY, double movementSpeed, double gridCellSize) {
+        super(identifier, gridX, gridY, movementSpeed, gridCellSize);
         this.isruIndex = new GridIndex(isruGridX, isruGridY);
     }
 
@@ -72,6 +72,8 @@ public abstract class ChargeableEntityState extends SimulationEntityState {
     public abstract void useCharge();
 
     public abstract Object getCharge();
+    public abstract Object getMaxCharge();
+
 
     /**
      *

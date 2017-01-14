@@ -7,6 +7,7 @@ import execution.EnvironmentGridExecution;
 import execution.SimulationEntityExecution;
 import org.apache.log4j.Logger;
 import siso.smackdown.utilities.Vector3;
+import state.SimulationEntityState;
 import test.test.passive.PassiveDummyRover;
 import state.DummyRoverState;
 import execution.DummyRoverExecution;
@@ -24,12 +25,11 @@ public class TestRunner extends Canvas implements Runnable {
     public static BufferStrategy strategy;
     public GridCell[][] grid;
     public TestEngine engine;
+    public SimulationEntityState.GridIndex isruIndex;
+    public int gridWidth, gridHeight;
 
     public void drawGrid(Graphics g) {
-        g.setColor(Color.GREEN);
-        g.drawRect(6, 6, 500, 500);
-
-        int cellSize = 500 / grid.length;
+        int cellSize = gridWidth / grid.length;
 
         for(int i=0; i<grid.length; i++) {
             for(int j=0; j<grid.length; j++) {
@@ -45,10 +45,15 @@ public class TestRunner extends Canvas implements Runnable {
     }
 
     public void drawEntities(Graphics g) {
+        int cellSize = gridWidth / grid.length;
+
+        g.setColor(Color.green);
+        g.fillRect(this.isruIndex.col*cellSize+9, this.isruIndex.row*cellSize+9, cellSize-6, cellSize-6);
+
         for(SimulationEntityExecution execution : this.engine.entities) {
             if(execution instanceof DummyRoverExecution){
+                DummyRoverState rover = (DummyRoverState) execution.simulationEntityState;
                 g.setColor(Color.red);
-                int cellSize = 500 / grid.length;
 
                 g.fillOval((int)(execution.simulationEntityState.position[0]*cellSize) + 6,
                             (int)(execution.simulationEntityState.position[1]*cellSize) + 6,
@@ -65,14 +70,9 @@ public class TestRunner extends Canvas implements Runnable {
                         execution.simulationEntityState.finalGridIndex.col*cellSize+6,
                         execution.simulationEntityState.finalGridIndex.row*cellSize+cellSize+6);
 
-                g.setColor(Color.green);
-
-                DummyRoverState rover = (DummyRoverState) execution.simulationEntityState;
-                g.fillRect(rover.isruIndex.col*cellSize+9, rover.isruIndex.col*cellSize+9, cellSize-6, cellSize-6);
 
                 g.setColor(Color.white);
-                g.drawString("" + rover.getCharge(), 50, 550);
-
+                g.drawString("" + rover, 15, gridHeight + (int)(25*rover.identifier) + 25);
             }
         }
 
@@ -116,23 +116,23 @@ public class TestRunner extends Canvas implements Runnable {
     public static void main(String[] args) throws Exception {
         String[] gridSource = {
                 "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ",
-                "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ",
                 "_ _ R _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ",
+                "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ",
                 "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ",
                 "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ",
                 "B B B B B _ B B B _ _ _ _ _ _ _ _ _ _ _ ",
                 "_ _ _ _ _ _ _ B B B B B B _ _ _ _ _ _ _ ",
                 "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ",
                 "_ _ _ _ _ _ B B B B B B B B B B _ _ _ _ ",
-                "_ _ _ _ _ _ B _ _ _ B B B B _ _ _ _ _ _ ",
-                "_ _ _ _ _ _ B _ _ B _ B _ _ _ B _ _ _ _ ",
+                "_ _ _ _ _ _ B _ _ B B B B B _ _ _ _ R _ ",
+                "_ _ I _ _ _ B _ _ B _ B _ _ _ B _ _ _ _ ",
                 "_ _ _ _ _ _ B _ _ B _ B _ _ _ B _ _ _ _ ",
                 "_ _ _ _ _ _ B _ _ B _ B _ _ B B B B B B ",
                 "_ _ _ _ _ _ B _ _ B _ B _ _ B _ _ _ _ _ ",
                 "_ _ _ _ _ _ B _ _ B _ B _ _ B _ _ _ _ _ ",
                 "_ _ _ _ _ _ B _ _ B _ B _ _ B _ _ _ _ _ ",
-                "_ _ _ _ _ _ B _ _ B _ B _ _ B B B B B _ ",
-                "_ _ _ _ _ _ B B B B _ B _ _ _ _ _ _ _ _ ",
+                "_ _ R _ _ _ B _ _ B _ B _ _ B B B B B _ ",
+                "_ _ _ _ _ _ B B _ B _ B _ _ _ _ _ _ _ _ ",
                 "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ",
                 "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ",
         };
@@ -142,18 +142,22 @@ public class TestRunner extends Canvas implements Runnable {
 
         TestEngine engine = new TestEngine(gridExecution);
 
-        extractEntitiesFromTXT(gridSource, engine);
         TestRunner runner = new TestRunner(engine);
+
+        runner.isruIndex = findISRU(gridSource);
+        extractEntitiesFromTXT(gridSource, engine, runner.isruIndex);
 
         JFrame frame = new JFrame("UCF - Mars Sim Test Runner");
         JPanel panel = (JPanel) frame.getContentPane();
-        panel.setPreferredSize(new Dimension(530, 600));
+        panel.setPreferredSize(new Dimension(800, 900));
         panel.setLayout(null);
 
-        runner.setBounds(0, 0, 530, 600);
+        runner.setBounds(0, 0, 800, 900);
         panel.add(runner);
 
         runner.setIgnoreRepaint(true);
+        runner.gridWidth = 775;
+        runner.gridHeight = 775;
 
         frame.pack();
         frame.setResizable(false);
@@ -168,14 +172,30 @@ public class TestRunner extends Canvas implements Runnable {
         thread.start();
     }
 
-    private static void extractEntitiesFromTXT(String[] gridSource, TestEngine engine) {
+    private static SimulationEntityState.GridIndex findISRU(String[] gridSource) {
+        for(int i=0; i < gridSource.length; i++) {
+            for(int j=0; j < gridSource[0].length()/2; j++) {
+                char c = gridSource[i].charAt(j*2);
+                if(c == 'I') {
+                    logger.debug(i + "," + j);
+                    return new SimulationEntityState.GridIndex(i, j);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private static void extractEntitiesFromTXT(String[] gridSource, TestEngine engine, SimulationEntityState.GridIndex isruIndex) {
         long hlaID = 0;
+        int isruX = isruIndex == null ? 0 : isruIndex.col;
+        int isruY = isruIndex == null ? 0 : isruIndex.row;
 
         for(int i=0; i < gridSource.length; i++) {
             for(int j=0; j < gridSource[0].length()/2; j++) {
                 char c = gridSource[i].charAt(j*2);
                 if(c == 'R') {
-                    DummyRoverState rover = new DummyRoverState(j, i, 8, 7, 20.0, 0.2, 1.0);
+                    DummyRoverState rover = new DummyRoverState(hlaID, j, i, isruX, isruY, 20.0, 0.2, 1.0);
                     DummyRoverExecution execution = new DummyRoverExecution(rover);
                     PassiveDummyRover mock = new PassiveDummyRover(hlaID, execution, engine.gridExecution);
 

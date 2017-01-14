@@ -7,10 +7,10 @@ public class SimpleChargeableEntityState extends ChargeableEntityState {
     public double capacity;
     public double currentCharge;
 
-    public SimpleChargeableEntityState(int gridX, int gridY,
+    public SimpleChargeableEntityState(long identifier, int gridX, int gridY,
                                        int isruGridX, int isruGridY,
                                        double capacity, double movementSpeed, double gridCellSize) {
-        super(gridX, gridY, isruGridX, isruGridY, movementSpeed, gridCellSize);
+        super(identifier, gridX, gridY, isruGridX, isruGridY, movementSpeed, gridCellSize);
         this.capacity = capacity;
         this.currentCharge = capacity;
     }
@@ -57,5 +57,15 @@ public class SimpleChargeableEntityState extends ChargeableEntityState {
     @Override
     public Object getCharge() {
         return this.currentCharge;
+    }
+
+    @Override
+    public Object getMaxCharge() {
+        return this.capacity;
+    }
+
+    public String toString() {
+        return super.toString() + String.format(" (Charge: %s %.2f / %.2f)",
+                this.chargeState, this.getCharge(), this.getMaxCharge());
     }
 }

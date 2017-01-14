@@ -18,6 +18,7 @@ import java.util.Queue;
 public class SimulationEntityState {
     final static Logger logger = Logger.getLogger(SimulationEntityState.class);
     public boolean isOnNewPath = false;
+    public long identifier;
 
     public enum MovementState {
         Stopped,
@@ -64,11 +65,8 @@ public class SimulationEntityState {
 
     public int collisionRadius;
 
-    public SimulationEntityState(int gridX, int gridY, int collisionRadius) {
-        this(gridX, gridY);
-        this.collisionRadius = collisionRadius;
-    }
-    public SimulationEntityState(int gridX, int gridY) {
+    public SimulationEntityState(long identifier, int gridX, int gridY) {
+        this.identifier = identifier;
         this.gridIndex = new GridIndex(gridY, gridX);
         this.movementSpeed = 0;
         this.gridCellSize = 1.0;
@@ -80,8 +78,13 @@ public class SimulationEntityState {
         this.collisionRadius = 0;
     }
 
-    public SimulationEntityState(int gridX, int gridY, double movementSpeed, double gridCellSize) {
-        this(gridX, gridY);
+    public SimulationEntityState(long identifier, int gridX, int gridY, int collisionRadius) {
+        this(identifier, gridX, gridY);
+        this.collisionRadius = collisionRadius;
+    }
+
+    public SimulationEntityState(long identifier, int gridX, int gridY, double movementSpeed, double gridCellSize) {
+        this(identifier, gridX, gridY);
         this.movementSpeed = movementSpeed;
         this.gridCellSize = gridCellSize;
     }
@@ -193,5 +196,9 @@ public class SimulationEntityState {
         }
 
         return false;
+    }
+
+    public String toString() {
+        return String.format("%s: [%d][%d] %s", this.getClass().getName(), this.gridIndex.row, this.gridIndex.col, this.movementState);
     }
 }
