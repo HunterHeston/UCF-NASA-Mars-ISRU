@@ -73,8 +73,8 @@ public class AStarTest {
 
         AStar<GridCell> a = new AStar<>();
         List<GridCell> path = a.pathFromGrid(grid,
-                new int[] {start.gridY, start.gridX},
-                new int[] {end.gridY, end.gridX});
+                new int[] {start.row, start.col},
+                new int[] {end.row, end.col});
 
         assert path == null;
 
@@ -137,8 +137,8 @@ public class AStarTest {
 
         AStar<GridCell> a = new AStar<>();
         List<GridCell> path = a.pathFromGrid(grid,
-                new int[] {start.gridY, start.gridX},
-                new int[] {end.gridY, end.gridX});
+                new int[] {start.row, start.col},
+                new int[] {end.row, end.col});
 
         assert path != null;
 
@@ -182,20 +182,20 @@ public class AStarTest {
 
         AStar<GridCell> a = new AStar<>();
         List<GridCell> path = a.pathFromGrid(grid.gridArray,
-                new int[] {start.gridY, start.gridX},
-                new int[] {end.gridY, end.gridX});
+                new int[] {start.row, start.col},
+                new int[] {end.row, end.col});
 
         printGridWithPath(grid.gridArray, path, start, end);
         logger.debug(path);
 
-        assert path.get(0).gridX == 2;
-        assert path.get(0).gridY == 0;
+        assert path.get(0).col == 2;
+        assert path.get(0).row == 0;
 
-        assert path.get(1).gridX == 1;
-        assert path.get(1).gridY == 1;
+        assert path.get(1).col == 1;
+        assert path.get(1).row == 1;
 
-        assert path.get(2).gridX == 0;
-        assert path.get(2).gridY == 0;
+        assert path.get(2).col == 0;
+        assert path.get(2).row == 0;
     }
 
     public void printGridWithPath(GridCell[][] grid, List<GridCell> path, GridCell start, GridCell end) {

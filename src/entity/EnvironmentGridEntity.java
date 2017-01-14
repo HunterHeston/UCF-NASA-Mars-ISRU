@@ -98,8 +98,8 @@ public class EnvironmentGridEntity {
         AStar a = new AStar<GridCell>();
 
         List<GridCell> path = a.pathFromGrid(this.gridArray,
-                                             new int[] {start.gridY, start.gridX},
-                                             new int[] {finish.gridY, finish.gridX});
+                                             new int[] {start.row, start.col},
+                                             new int[] {finish.row, finish.col});
 
         if(!path.isEmpty()) {
             Collections.reverse(path);
@@ -117,7 +117,7 @@ public class EnvironmentGridEntity {
             return false;
         }
 
-        if(Math.abs(cell.gridX-targetX) > 1 || Math.abs(cell.gridY-targetY) > 1) {
+        if(Math.abs(cell.col-targetX) > 1 || Math.abs(cell.row-targetY) > 1) {
             logger.error("Out of bounds attempt to move from " + cell + " to " + targetX + "," + targetY);
             return false;
         }
@@ -126,11 +126,11 @@ public class EnvironmentGridEntity {
         GridCell target = this.gridArray[targetY][targetX];
 
         int collisionRadius = entityToCollisionRadiusMap.get(hlaID);
-        applyCollisions(collisionRadius, cell.gridX, cell.gridY, true);
+        applyCollisions(collisionRadius, cell.col, cell.row, true);
 
         //  Thread danger here, applyCollisions changes shared memory.....
         if(hasCollisionsWithinRadius(collisionRadius, targetX, targetY)) {
-            applyCollisions(collisionRadius, cell.gridX, cell.gridY, false);
+            applyCollisions(collisionRadius, cell.col, cell.row, false);
             logger.error("Invalid attempt to move to a collision grid");
 
             collisionRadius -= 1;

@@ -123,7 +123,7 @@ public class AStar<T extends Object> {
                 //  Update the fScore
                 GridCell cellNeighbor = (GridCell) neighbor.object;
                 neighbor.score = tentScore;
-                neighbor.fScore = neighbor.score + (int)Math.abs(Math.sqrt(Math.pow((double)end[0]-cellNeighbor.gridX, 2.0) + Math.pow((double)end[1]-cellNeighbor.gridY, 2.0)));
+                neighbor.fScore = neighbor.score + (int)Math.abs(Math.sqrt(Math.pow((double)end[0]-cellNeighbor.col, 2.0) + Math.pow((double)end[1]-cellNeighbor.row, 2.0)));
 
                 fScoreQueue.remove(neighbor);
                 fScoreQueue.add(neighbor);
@@ -143,11 +143,11 @@ public class AStar<T extends Object> {
     private static void getNeighborsFromGrid(Node current, Node[][] nodeGrid, ArrayList<Node> dest) {
         dest.clear();
 
-        int is = Math.max(0, ((GridCell)current.object).gridY-1);
-        int js = Math.max(0, ((GridCell)current.object).gridX-1);
+        int is = Math.max(0, ((GridCell)current.object).row-1);
+        int js = Math.max(0, ((GridCell)current.object).col-1);
 
-        int ie = Math.min(nodeGrid.length-1, ((GridCell)current.object).gridY+1);
-        int je = Math.min(nodeGrid[0].length-1, ((GridCell)current.object).gridX+1);
+        int ie = Math.min(nodeGrid.length-1, ((GridCell)current.object).row+1);
+        int je = Math.min(nodeGrid[0].length-1, ((GridCell)current.object).col+1);
 
         for(int i=is; i<=ie; i++) {
             for(int j=js; j<=je; j++) {

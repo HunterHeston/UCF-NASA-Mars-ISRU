@@ -9,7 +9,6 @@ import org.junit.rules.ExpectedException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 
 /**
@@ -120,17 +119,17 @@ public class EnvironmentGridEntityTest {
 
         grid.printGridWithPath(grid.gridArray, path, start, end);
 
-        assert path[0].gridX == 1;
-        assert path[0].gridY == 1;
+        assert path[0].col == 1;
+        assert path[0].row == 1;
 
-        assert path[1].gridX == 2;
-        assert path[1].gridY == 2;
+        assert path[1].col == 2;
+        assert path[1].row == 2;
 
-        assert path[2].gridX == 1;
-        assert path[2].gridY == 3;
+        assert path[2].col == 1;
+        assert path[2].row == 3;
 
-        assert path[3].gridX == 0;
-        assert path[3].gridY == 3;
+        assert path[3].col == 0;
+        assert path[3].row == 3;
     }
 
     @Test
@@ -158,27 +157,27 @@ public class EnvironmentGridEntityTest {
         long hlaID = cell.hlaID;
         grid.gridMove(hlaID, 4, 1);
 
-        assert grid.entityToGridCellMap.get(hlaID).gridX == 4;
-        assert grid.entityToGridCellMap.get(hlaID).gridY == 1;
+        assert grid.entityToGridCellMap.get(hlaID).col == 4;
+        assert grid.entityToGridCellMap.get(hlaID).row == 1;
 
         logger.debug("Grid Move Final");
         grid.printGrid(grid.gridArray);
 
         //  Too Far Move
         assert !grid.gridMove(hlaID, 6, 1);
-        assert grid.entityToGridCellMap.get(hlaID).gridX == 4;
-        assert grid.entityToGridCellMap.get(hlaID).gridY == 1;
+        assert grid.entityToGridCellMap.get(hlaID).col == 4;
+        assert grid.entityToGridCellMap.get(hlaID).row == 1;
 
         //  Blocked Move
         assert !grid.gridMove(hlaID, 3,  2);
-        assert grid.entityToGridCellMap.get(hlaID).gridX == 4;
-        assert grid.entityToGridCellMap.get(hlaID).gridY == 1;
+        assert grid.entityToGridCellMap.get(hlaID).col == 4;
+        assert grid.entityToGridCellMap.get(hlaID).row == 1;
 
         //  Occupied Move
         assert grid.gridMove(hlaID, 3, 1);
         assert !grid.gridMove(hlaID, 2, 1);
-        assert grid.entityToGridCellMap.get(hlaID).gridX == 3;
-        assert grid.entityToGridCellMap.get(hlaID).gridY == 1;
+        assert grid.entityToGridCellMap.get(hlaID).col == 3;
+        assert grid.entityToGridCellMap.get(hlaID).row == 1;
 
         //  Out of Bounds Move
         assert grid.gridMove(hlaID, 2, 0);
@@ -186,8 +185,8 @@ public class EnvironmentGridEntityTest {
         try {grid.gridMove(hlaID, 2, -1);} catch(Exception e) {annoying=true;}
 
         assert annoying;
-        assert grid.entityToGridCellMap.get(hlaID).gridX == 2;
-        assert grid.entityToGridCellMap.get(hlaID).gridY == 0;
+        assert grid.entityToGridCellMap.get(hlaID).col == 2;
+        assert grid.entityToGridCellMap.get(hlaID).row == 0;
 
     }
 

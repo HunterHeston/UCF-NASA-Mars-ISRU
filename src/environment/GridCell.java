@@ -6,13 +6,13 @@ package environment;
 public class GridCell {
 
     public boolean blocked;
-    public int gridX, gridY, collisionRadiusOverlap;
+    public int col, row, collisionRadiusOverlap;
     public long hlaID;
 
-    public GridCell(int gridX, int gridY) {
+    public GridCell(int col, int row) {
         this.collisionRadiusOverlap = 0;
-        this.gridX = gridX;
-        this.gridY = gridY;
+        this.col = col;
+        this.row = row;
 
         this.hlaID = Integer.MAX_VALUE;
         this.blocked = false;
@@ -36,7 +36,7 @@ public class GridCell {
     }
 
     public String toString() {
-        return "Cell: (" + this.gridX + "," + this.gridY + "): B=" + this.isBlocked() + " O=" + this.isOccupied();
+        return "Cell: [" + this.row + "][" + this.col + "]: B=" + this.isBlocked() + " O=" + this.isOccupied();
     }
 
 }

@@ -44,7 +44,7 @@ public class SimulationEntityMock extends PassiveUpdateMock {
             LinkedList<SimulationEntity.GridIndex> pathQueue = new LinkedList<>();
 
             for(GridCell cell : path) {
-                pathQueue.add(new SimulationEntity.GridIndex(cell.gridY, cell.gridX));
+                pathQueue.add(new SimulationEntity.GridIndex(cell.row, cell.col));
             }
 
             this.entityExecution.receivePathFindingInteractionResponse(pathQueue);
