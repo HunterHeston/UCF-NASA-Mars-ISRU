@@ -52,6 +52,18 @@ public class TestRunner extends Canvas implements Runnable {
                             (int)(execution.simulationEntity.position[1]*cellSize) + 6,
                             cellSize, cellSize);
 
+                g.setColor(Color.blue);
+                g.drawLine(execution.simulationEntity.finalGridIndex.col*cellSize+6,
+                        execution.simulationEntity.finalGridIndex.row*cellSize+6,
+                        execution.simulationEntity.finalGridIndex.col*cellSize+cellSize+6,
+                        execution.simulationEntity.finalGridIndex.row*cellSize+cellSize+6);
+
+                g.drawLine(execution.simulationEntity.finalGridIndex.col*cellSize+cellSize+6,
+                        execution.simulationEntity.finalGridIndex.row*cellSize+6,
+                        execution.simulationEntity.finalGridIndex.col*cellSize+6,
+                        execution.simulationEntity.finalGridIndex.row*cellSize+cellSize+6);
+
+
             }
         }
 
