@@ -1,41 +1,41 @@
 package execution;
 
-import entity.ChargeableEntity;
-import entity.SimulationEntity;
+import state.ChargeableEntityState;
+import state.SimulationEntityState;
 
 /**
  * Created by rick on 1/13/17.
  */
 public class ChargeableEntityExecution extends SimulationEntityExecution {
-    public ChargeableEntityExecution(ChargeableEntity simulationEntity) {
+    public ChargeableEntityExecution(ChargeableEntityState simulationEntity) {
         super(simulationEntity);
     }
 
     /**
      *
-     * Re-Implement activeUpdate, to kill the entity when the battery dies.
+     * Re-Implement activeUpdate, to kill the state when the battery dies.
      *
      */
     @Override
     public void activeUpdate() {
-        ChargeableEntity entity = (ChargeableEntity) this.simulationEntity;
+        ChargeableEntityState entity = (ChargeableEntityState) this.simulationEntityState;
 
-        //  Wrap active entity updates to enforce dead-ness
+        //  Wrap active state updates to enforce dead-ness
         if(!entity.isDead()) {
             movementUpdate();
 
             //  We also must be in a Null chargeState to return control to sub-implementations
-            if(simulationEntity.movementState == SimulationEntity.MovementState.Stopped &&
-                    entity.chargeState == ChargeableEntity.ChargeState.Null) {
+            if(simulationEntityState.movementState == SimulationEntityState.MovementState.Stopped &&
+                    entity.chargeState == ChargeableEntityState.ChargeState.Null) {
                 this.activeEntityUpdate();
             } else {
                 //  Chargeable Entity is in control
-                if(entity.chargeState == ChargeableEntity.ChargeState.TransitToISRU &&
-                        entity.movementState == SimulationEntity.MovementState.Stopped)  {
+                if(entity.chargeState == ChargeableEntityState.ChargeState.TransitToISRU &&
+                        entity.movementState == SimulationEntityState.MovementState.Stopped)  {
 
                     //  We should be at the ISRU, try and connect
                     entity.attemptConnectToISRU();
-                } else if(entity.chargeState == ChargeableEntity.ChargeState.Charging && entity.chargeFull()) {
+                } else if(entity.chargeState == ChargeableEntityState.ChargeState.Charging && entity.chargeFull()) {
                     entity.disconnectFromISRU();
                 }
             }
@@ -48,12 +48,12 @@ public class ChargeableEntityExecution extends SimulationEntityExecution {
     public void staticUpdate() {
         super.staticUpdate();
 
-        ChargeableEntity entity = (ChargeableEntity) this.simulationEntity;
+        ChargeableEntityState entity = (ChargeableEntityState) this.simulationEntityState;
         entity.useCharge();
     }
 
     public void receiveChargeConnectResponse(boolean success) {
-        ChargeableEntity entity = (ChargeableEntity) this.simulationEntity;
+        ChargeableEntityState entity = (ChargeableEntityState) this.simulationEntityState;
 
         if(success) {
             entity.connectToISRU();
@@ -63,12 +63,12 @@ public class ChargeableEntityExecution extends SimulationEntityExecution {
     }
 
     public void receivePortAvailableResponse() {
-        ChargeableEntity entity = (ChargeableEntity) this.simulationEntity;
+        ChargeableEntityState entity = (ChargeableEntityState) this.simulationEntityState;
         entity.connectToISRU();
     }
 
     public void receiveChargeAmountInteraction(Object chargeAmount) {
-        ChargeableEntity entity = (ChargeableEntity) this.simulationEntity;
+        ChargeableEntityState entity = (ChargeableEntityState) this.simulationEntityState;
         entity.doCharge(chargeAmount);
     }
 

@@ -1,7 +1,7 @@
 package test.algo;
 
 import algo.AStar;
-import entity.EnvironmentGridEntity;
+import state.EnvironmentGridState;
 import environment.EnvironmentGridFactory;
 import environment.GridCell;
 import org.apache.log4j.Logger;
@@ -161,7 +161,7 @@ public class AStarTest {
                 "_ _ _ _ _ _ _ _ _ _ ",
         };
 
-        EnvironmentGridEntity grid = EnvironmentGridFactory.gridFromTXT(gridSource);
+        EnvironmentGridState grid = EnvironmentGridFactory.gridFromTXT(gridSource);
 
         GridCell start = null;
         GridCell end = null;

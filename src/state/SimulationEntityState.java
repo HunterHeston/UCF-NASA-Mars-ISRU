@@ -1,4 +1,4 @@
-package entity;
+package state;
 
 import org.apache.log4j.Logger;
 
@@ -7,16 +7,16 @@ import java.util.Queue;
 /**
  *
  * This is the base class for all entities within the simulation.
- * An entity class acts to encapsulate data pertaining to the entity.
- * An entity class also provides methods to transition between states.
+ * An state class acts to encapsulate data pertaining to the state.
+ * An state class also provides methods to transition between states.
  * Each of these state transition methods should strictly enforce state
  * sequences, preferring runtime errors (via assertion) as an enforcement
  * method.
  *
  * Created by Andrew on 1/9/2017.
  */
-public class SimulationEntity {
-    final static Logger logger = Logger.getLogger(SimulationEntity.class);
+public class SimulationEntityState {
+    final static Logger logger = Logger.getLogger(SimulationEntityState.class);
     public boolean isOnNewPath = false;
 
     public enum MovementState {
@@ -64,11 +64,11 @@ public class SimulationEntity {
 
     public int collisionRadius;
 
-    public SimulationEntity(int gridX, int gridY, int collisionRadius) {
+    public SimulationEntityState(int gridX, int gridY, int collisionRadius) {
         this(gridX, gridY);
         this.collisionRadius = collisionRadius;
     }
-    public SimulationEntity(int gridX, int gridY) {
+    public SimulationEntityState(int gridX, int gridY) {
         this.gridIndex = new GridIndex(gridY, gridX);
         this.movementSpeed = 0;
         this.gridCellSize = 1.0;
@@ -80,7 +80,7 @@ public class SimulationEntity {
         this.collisionRadius = 0;
     }
 
-    public SimulationEntity(int gridX, int gridY, double movementSpeed, double gridCellSize) {
+    public SimulationEntityState(int gridX, int gridY, double movementSpeed, double gridCellSize) {
         this(gridX, gridY);
         this.movementSpeed = movementSpeed;
         this.gridCellSize = gridCellSize;

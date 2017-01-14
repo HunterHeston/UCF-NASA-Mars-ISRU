@@ -1,6 +1,6 @@
 package test.environment;
 
-import entity.EnvironmentGridEntity;
+import state.EnvironmentGridState;
 import environment.EnvironmentGridFactory;
 import environment.GridCell;
 import org.apache.log4j.Logger;
@@ -14,8 +14,8 @@ import java.util.Arrays;
 /**
  * Created by Andrew on 1/8/2017.
  */
-public class EnvironmentGridEntityTest {
-    final static Logger logger = Logger.getLogger(EnvironmentGridEntityTest.class);
+public class EnvironmentGridStateTest {
+    final static Logger logger = Logger.getLogger(EnvironmentGridStateTest.class);
 
     public ExpectedException thrown = ExpectedException.none();
 
@@ -44,7 +44,7 @@ public class EnvironmentGridEntityTest {
                 "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ",
         };
 
-        EnvironmentGridEntity grid = EnvironmentGridFactory.gridFromTXT(gridSource);
+        EnvironmentGridState grid = EnvironmentGridFactory.gridFromTXT(gridSource);
 
         //  Multiple place success
         grid.placeEntity(1, 0, 0, 1);
@@ -55,44 +55,44 @@ public class EnvironmentGridEntityTest {
         assert grid.gridArray[4][4].hlaID == 2;
         assert grid.gridArray[4][6].hlaID == 3;
 
-        EnvironmentGridEntity.printGrid(grid.gridArray);
+        EnvironmentGridState.printGrid(grid.gridArray);
 
         //  Duplicate place fails
         boolean annoying = false;
-        try { grid.placeEntity(3, 9, 9, 1); } catch(EnvironmentGridEntity.PlacementException e) {annoying=true;}
+        try { grid.placeEntity(3, 9, 9, 1); } catch(EnvironmentGridState.PlacementException e) {annoying=true;}
         assert annoying;
 
         //  Blocked place fails
         annoying = false;
-        try { grid.placeEntity(4, 0, 5, 1); } catch(EnvironmentGridEntity.PlacementException e) {annoying=true;}
+        try { grid.placeEntity(4, 0, 5, 1); } catch(EnvironmentGridState.PlacementException e) {annoying=true;}
         assert annoying;
 
-        //  Direct overlap place fails (other entity)
+        //  Direct overlap place fails (other state)
         annoying = false;
-        try { grid.placeEntity(4, 5, 5, 1); } catch(EnvironmentGridEntity.PlacementException e) {annoying=true;}
+        try { grid.placeEntity(4, 5, 5, 1); } catch(EnvironmentGridState.PlacementException e) {annoying=true;}
         assert annoying;
 
         //  Direct overlap place fails (blocked cell)
         grid.placeEntity(4, 4, 9, 2);
-        EnvironmentGridEntity.printGrid(grid.gridArray);
+        EnvironmentGridState.printGrid(grid.gridArray);
 
         annoying = false;
-        try { grid.placeEntity(5, 4, 8, 1); } catch(EnvironmentGridEntity.PlacementException e) {annoying=true;}
+        try { grid.placeEntity(5, 4, 8, 1); } catch(EnvironmentGridState.PlacementException e) {annoying=true;}
         assert annoying;
 
-        //  Adjacent overlap place fails (other entity)
+        //  Adjacent overlap place fails (other state)
         annoying = false;
-        try { grid.placeEntity(5, 4, 7, 2); } catch(EnvironmentGridEntity.PlacementException e) {annoying=true;}
+        try { grid.placeEntity(5, 4, 7, 2); } catch(EnvironmentGridState.PlacementException e) {annoying=true;}
         assert annoying;
 
         //  Adjacent overlap place fails (blocked cell)
         annoying = false;
-        try { grid.placeEntity(5, 3, 4, 2); } catch(EnvironmentGridEntity.PlacementException e) {annoying=true;}
+        try { grid.placeEntity(5, 3, 4, 2); } catch(EnvironmentGridState.PlacementException e) {annoying=true;}
         assert annoying;
 
         //  Out of bounds fails
         annoying = false;
-        try { grid.placeEntity(5, 30, 40, 2); } catch(EnvironmentGridEntity.PlacementException e) {annoying=true;}
+        try { grid.placeEntity(5, 30, 40, 2); } catch(EnvironmentGridState.PlacementException e) {annoying=true;}
         assert annoying;
     }
 
@@ -110,7 +110,7 @@ public class EnvironmentGridEntityTest {
                 "_ _ _ _ _ _ _ _ _ _ ",
         };
 
-        EnvironmentGridEntity grid = EnvironmentGridFactory.gridFromTXT(gridSource);
+        EnvironmentGridState grid = EnvironmentGridFactory.gridFromTXT(gridSource);
 
         GridCell start = grid.gridArray[0][0];
         GridCell end   = grid.gridArray[3][0];
@@ -146,7 +146,7 @@ public class EnvironmentGridEntityTest {
                 "_ _ _ _ _ _ _ _ _ _ ",
         };
 
-        EnvironmentGridEntity grid = EnvironmentGridFactory.gridFromTXT(gridSource);
+        EnvironmentGridState grid = EnvironmentGridFactory.gridFromTXT(gridSource);
         GridCell[] entities = getEntityCellsFromText(grid, gridSource);
 
         logger.debug("Grid Move Initial");
@@ -190,7 +190,7 @@ public class EnvironmentGridEntityTest {
 
     }
 
-    public static GridCell[] getEntityCellsFromText(EnvironmentGridEntity grid, String[] gridSource) throws Exception {
+    public static GridCell[] getEntityCellsFromText(EnvironmentGridState grid, String[] gridSource) throws Exception {
         ArrayList<GridCell> cellList = new ArrayList<>();
 
         for(int i=0; i<gridSource.length; i++) {

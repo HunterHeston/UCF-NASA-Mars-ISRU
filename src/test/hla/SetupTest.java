@@ -1,4 +1,4 @@
-package test;
+package test.hla;
 
 import siso.smackdown.FrameType;
 import skf.config.Configuration;

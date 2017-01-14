@@ -1,15 +1,15 @@
-package entity;
+package state;
 
 /**
  * Created by rick on 1/13/17.
  */
-public class SimpleChargeableEntity extends ChargeableEntity {
+public class SimpleChargeableEntityState extends ChargeableEntityState {
     public double capacity;
     public double currentCharge;
 
-    public SimpleChargeableEntity(int gridX, int gridY,
-                                  int isruGridX, int isruGridY,
-                                  double capacity, double movementSpeed, double gridCellSize) {
+    public SimpleChargeableEntityState(int gridX, int gridY,
+                                       int isruGridX, int isruGridY,
+                                       double capacity, double movementSpeed, double gridCellSize) {
         super(gridX, gridY, isruGridX, isruGridY, movementSpeed, gridCellSize);
         this.capacity = capacity;
         this.currentCharge = capacity;

@@ -1,6 +1,6 @@
 package execution;
 
-import entity.EnvironmentGridEntity;
+import state.EnvironmentGridState;
 import environment.GridCell;
 import org.apache.log4j.Logger;
 import siso.smackdown.utilities.Vector3;
@@ -15,9 +15,9 @@ public class EnvironmentGridExecution {
     public Vector3 gridOrigin;
     public double gridCellSize;
     public int gridHeight, gridWidth;
-    public EnvironmentGridEntity grid;
+    public EnvironmentGridState grid;
 
-    public EnvironmentGridExecution(EnvironmentGridEntity grid, Vector3 gridOrigin,
+    public EnvironmentGridExecution(EnvironmentGridState grid, Vector3 gridOrigin,
                                     double gridCellSize) {
         this.grid = grid;
         this.gridOrigin = gridOrigin;
@@ -32,15 +32,15 @@ public class EnvironmentGridExecution {
         this.gridHeight = gridHeight;
         this.gridWidth = gridWidth;
 
-        this.grid = new EnvironmentGridEntity(this.gridWidth, this.gridHeight);
+        this.grid = new EnvironmentGridState(this.gridWidth, this.gridHeight);
     }
 
     public boolean receivePlaceEntityInteraction(int hlaID, int targetX,
                                                  int targetY, int collisionRadius) {
         try {
             return this.grid.placeEntity(hlaID, targetX, targetY, collisionRadius);
-        } catch (EnvironmentGridEntity.PlacementException e) {
-            System.out.print("Unhandled Exception placing entity " + hlaID);
+        } catch (EnvironmentGridState.PlacementException e) {
+            System.out.print("Unhandled Exception placing state " + hlaID);
             e.printStackTrace();
         }
 
@@ -50,8 +50,8 @@ public class EnvironmentGridExecution {
     public boolean receiveGridMoveInteraction(long hlaID, int targetX, int targetY) {
         try {
             return this.grid.gridMove(hlaID, targetX, targetY);
-        } catch (EnvironmentGridEntity.PlacementException e) {
-            System.out.print("Unhandled Exception placing entity " + hlaID);
+        } catch (EnvironmentGridState.PlacementException e) {
+            System.out.print("Unhandled Exception placing state " + hlaID);
             e.printStackTrace();
         }
 

@@ -1,6 +1,6 @@
-package test.federate.mock;
+package test.federate.passive;
 
-import entity.SimulationEntity;
+import state.SimulationEntityState;
 import environment.GridCell;
 import execution.EnvironmentGridExecution;
 import execution.SimulationEntityExecution;
@@ -10,21 +10,21 @@ import java.util.LinkedList;
 
 /**
  *
- * This class will facilitate the testing of entity logic, without the need to run
+ * This class will facilitate the testing of state logic, without the need to run
  * the test as an HLA application.  This is accomplished through the passiveUpdate method,
  * which should be overriden by child classes.
  *
  * Created by Andrew on 1/13/2017.
  */
-public class SimulationEntityMock extends PassiveUpdateMock {
-    final static Logger logger = Logger.getLogger(SimulationEntityMock.class);
+public class PassiveSimulationEntity extends PassiveUpdateMock {
+    final static Logger logger = Logger.getLogger(PassiveSimulationEntity.class);
 
     public long hlaID;
     public EnvironmentGridExecution gridExecution;
 
-    public SimulationEntityMock(long hlaID,
-                                SimulationEntityExecution entityExecution,
-                                EnvironmentGridExecution gridExecution) {
+    public PassiveSimulationEntity(long hlaID,
+                                   SimulationEntityExecution entityExecution,
+                                   EnvironmentGridExecution gridExecution) {
         super(entityExecution);
         this.gridExecution = gridExecution;
         this.hlaID = hlaID;
@@ -37,7 +37,7 @@ public class SimulationEntityMock extends PassiveUpdateMock {
      * Instead the handling of interactions can be emulated by inferring which callbacks
      * to the SimulationEntityExecution should be made.
      *
-     * This class is called directly after the active updates are made to the entity.  This
+     * This class is called directly after the active updates are made to the state.  This
      * class should be overriden to test higher level behavior logic, however a call to
      * super.passiveUpdate() MUST be called at the beginning of each overriden instance of this method,
      * otherwise, movement will not work.
@@ -45,10 +45,10 @@ public class SimulationEntityMock extends PassiveUpdateMock {
      */
     @Override
     public void passiveUpdate() {
-        if(this.entityExecution.simulationEntity.movementState ==
-                SimulationEntity.MovementState.PathFinding) {
+        if(this.entityExecution.simulationEntityState.movementState ==
+                SimulationEntityState.MovementState.PathFinding) {
 
-            //  The movement state is in PathFinding, therefore the entity is expecting
+            //  The movement state is in PathFinding, therefore the state is expecting
             //  to receive a a PathFindingInteractionResponse containing the path.
             //  Instead of sending an interaction, the path is calculated directly
             //  from an environment instance, and the receivePathFindingInteractionResponse
@@ -56,31 +56,31 @@ public class SimulationEntityMock extends PassiveUpdateMock {
 
             GridCell[] path =
                     this.gridExecution.receivePathFindingInteraction(this.hlaID,
-                        this.entityExecution.simulationEntity.finalGridIndex.col,
-                        this.entityExecution.simulationEntity.finalGridIndex.row);
+                        this.entityExecution.simulationEntityState.finalGridIndex.col,
+                        this.entityExecution.simulationEntityState.finalGridIndex.row);
 
             if(path == null) {
                 this.entityExecution.receivePathFindingInteractionResponse(null);
             }
 
-            LinkedList<SimulationEntity.GridIndex> pathQueue = new LinkedList<>();
+            LinkedList<SimulationEntityState.GridIndex> pathQueue = new LinkedList<>();
 
             for(GridCell cell : path) {
-                pathQueue.add(new SimulationEntity.GridIndex(cell.row, cell.col));
+                pathQueue.add(new SimulationEntityState.GridIndex(cell.row, cell.col));
             }
 
             this.entityExecution.receivePathFindingInteractionResponse(pathQueue);
 
-        } else if(this.entityExecution.simulationEntity.movementState ==
-                       SimulationEntity.MovementState.GridMovement) {
+        } else if(this.entityExecution.simulationEntityState.movementState ==
+                       SimulationEntityState.MovementState.GridMovement) {
 
-            //  The movement state is in GridMovement, therefore the entity is expecting to
+            //  The movement state is in GridMovement, therefore the state is expecting to
             //  to receive a GridMovementInteractionResponse.  Instead of sending an interaction,
             //  The callback to the corresponding EnvironmentGridExecution method is made directly.
             this.entityExecution.receiveGridMovementInteractionResponse(
                     this.gridExecution.receiveGridMoveInteraction(hlaID,
-                            this.entityExecution.simulationEntity.targetGridIndex.col,
-                            this.entityExecution.simulationEntity.targetGridIndex.row));
+                            this.entityExecution.simulationEntityState.targetGridIndex.col,
+                            this.entityExecution.simulationEntityState.targetGridIndex.row));
         }
     }
 }

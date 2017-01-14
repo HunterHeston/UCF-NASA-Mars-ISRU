@@ -1,4 +1,4 @@
-package test;
+package test.hla;
 
 /**
  * Created by Andrew on 1/1/2017.

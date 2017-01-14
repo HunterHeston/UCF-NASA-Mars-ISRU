@@ -1,18 +1,15 @@
 package test.test;
 
-import entity.EnvironmentGridEntity;
+import state.EnvironmentGridState;
 import environment.EnvironmentGridFactory;
 import environment.GridCell;
 import execution.EnvironmentGridExecution;
 import execution.SimulationEntityExecution;
 import org.apache.log4j.Logger;
 import siso.smackdown.utilities.Vector3;
-import test.federate.mock.TestChargeableRoverMock;
-import test.federate.mock.TestRoverMock;
-import test.test.rover.TestChargeableRover;
-import test.test.rover.TestChargeableRoverExecution;
-import test.test.rover.TestRover;
-import test.test.rover.TestRoverExecution;
+import test.federate.passive.PassiveChargeableRover;
+import state.DummyRoverState;
+import execution.DummyRoverExecution;
 
 import javax.swing.*;
 import java.awt.*;
@@ -49,28 +46,28 @@ public class TestRunner extends Canvas implements Runnable {
 
     public void drawEntities(Graphics g) {
         for(SimulationEntityExecution execution : this.engine.entities) {
-            if(execution instanceof TestChargeableRoverExecution){
+            if(execution instanceof DummyRoverExecution){
                 g.setColor(Color.red);
                 int cellSize = 500 / grid.length;
 
-                g.fillOval((int)(execution.simulationEntity.position[0]*cellSize) + 6,
-                            (int)(execution.simulationEntity.position[1]*cellSize) + 6,
+                g.fillOval((int)(execution.simulationEntityState.position[0]*cellSize) + 6,
+                            (int)(execution.simulationEntityState.position[1]*cellSize) + 6,
                             cellSize, cellSize);
 
                 g.setColor(Color.blue);
-                g.drawLine(execution.simulationEntity.finalGridIndex.col*cellSize+6,
-                        execution.simulationEntity.finalGridIndex.row*cellSize+6,
-                        execution.simulationEntity.finalGridIndex.col*cellSize+cellSize+6,
-                        execution.simulationEntity.finalGridIndex.row*cellSize+cellSize+6);
+                g.drawLine(execution.simulationEntityState.finalGridIndex.col*cellSize+6,
+                        execution.simulationEntityState.finalGridIndex.row*cellSize+6,
+                        execution.simulationEntityState.finalGridIndex.col*cellSize+cellSize+6,
+                        execution.simulationEntityState.finalGridIndex.row*cellSize+cellSize+6);
 
-                g.drawLine(execution.simulationEntity.finalGridIndex.col*cellSize+cellSize+6,
-                        execution.simulationEntity.finalGridIndex.row*cellSize+6,
-                        execution.simulationEntity.finalGridIndex.col*cellSize+6,
-                        execution.simulationEntity.finalGridIndex.row*cellSize+cellSize+6);
+                g.drawLine(execution.simulationEntityState.finalGridIndex.col*cellSize+cellSize+6,
+                        execution.simulationEntityState.finalGridIndex.row*cellSize+6,
+                        execution.simulationEntityState.finalGridIndex.col*cellSize+6,
+                        execution.simulationEntityState.finalGridIndex.row*cellSize+cellSize+6);
 
                 g.setColor(Color.green);
 
-                TestChargeableRover rover = (TestChargeableRover) execution.simulationEntity;
+                DummyRoverState rover = (DummyRoverState) execution.simulationEntityState;
                 g.fillRect(rover.isruIndex.col*cellSize+9, rover.isruIndex.col*cellSize+9, cellSize-6, cellSize-6);
 
                 g.setColor(Color.white);
@@ -140,7 +137,7 @@ public class TestRunner extends Canvas implements Runnable {
                 "_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ ",
         };
 
-        EnvironmentGridEntity grid = EnvironmentGridFactory.gridFromTXT(gridSource);
+        EnvironmentGridState grid = EnvironmentGridFactory.gridFromTXT(gridSource);
         EnvironmentGridExecution gridExecution = new EnvironmentGridExecution(grid, new Vector3(), 1.0);
 
         TestEngine engine = new TestEngine(gridExecution);
@@ -178,12 +175,12 @@ public class TestRunner extends Canvas implements Runnable {
             for(int j=0; j < gridSource[0].length()/2; j++) {
                 char c = gridSource[i].charAt(j*2);
                 if(c == 'R') {
-                    TestChargeableRover rover = new TestChargeableRover(j, i, 8, 7, 20.0, 0.2, 1.0);
-                    TestChargeableRoverExecution execution = new TestChargeableRoverExecution(rover);
-                    TestChargeableRoverMock mock = new TestChargeableRoverMock(hlaID, execution, engine.gridExecution);
+                    DummyRoverState rover = new DummyRoverState(j, i, 8, 7, 20.0, 0.2, 1.0);
+                    DummyRoverExecution execution = new DummyRoverExecution(rover);
+                    PassiveChargeableRover mock = new PassiveChargeableRover(hlaID, execution, engine.gridExecution);
 
                     engine.addEntity(hlaID, 1, execution, mock);
-                    logger.debug("Added entity: " + hlaID);
+                    logger.debug("Added state: " + hlaID);
 
                     hlaID++;
                 }

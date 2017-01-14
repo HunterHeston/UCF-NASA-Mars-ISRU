@@ -1,14 +1,12 @@
-package test.test.rover;
+package state;
 
-import entity.ChargeableEntity;
-import entity.SimpleChargeableEntity;
 import org.apache.log4j.Logger;
 
 /**
  * Created by rick on 1/13/17.
  */
-public class TestChargeableRover extends SimpleChargeableEntity {
-    final static Logger logger = Logger.getLogger(TestChargeableRover.class);
+public class DummyRoverState extends SimpleChargeableEntityState {
+    final static Logger logger = Logger.getLogger(DummyRoverState.class);
 
     public enum TestRoverState {
         Standby,
@@ -17,9 +15,9 @@ public class TestChargeableRover extends SimpleChargeableEntity {
     }
 
     public TestRoverState testRoverState = TestRoverState.Standby;
-    public TestChargeableRover(int gridX, int gridY, int isruGridX,
-                               int isruGridY, double capacity,
-                                double movementSpeed, double gridCellSize) {
+    public DummyRoverState(int gridX, int gridY, int isruGridX,
+                           int isruGridY, double capacity,
+                           double movementSpeed, double gridCellSize) {
 
         super(gridX, gridY, isruGridX, isruGridY, capacity, movementSpeed, gridCellSize);
     }
@@ -34,7 +32,7 @@ public class TestChargeableRover extends SimpleChargeableEntity {
         }
     }
 
-    public void pickPlace(int gridX, int gridY) {
+    public void goToPlace(int gridX, int gridY) {
         assert this.testRoverState == TestRoverState.WaitingForPlace;
         this.testRoverState = TestRoverState.GoingToPlace;
         this.beginPathFinding(gridX, gridY);
@@ -44,6 +42,7 @@ public class TestChargeableRover extends SimpleChargeableEntity {
     public void atPlace() {
         assert this.testRoverState == TestRoverState.GoingToPlace;
         assert this.movementState == MovementState.Stopped;
+
         this.testRoverState = TestRoverState.Standby;
         logger.debug("Chargeable Test Rover State Transition: GoingToPlace -> Standby");
 

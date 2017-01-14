@@ -1,19 +1,19 @@
 package execution;
 
-import entity.SimulationEntity;
+import state.SimulationEntityState;
 import org.apache.log4j.Logger;
 
 import java.util.Queue;
 
 /**
  *
- * This class is the base entity execution class for all entities in the simulation
+ * This class is the base state execution class for all entities in the simulation
  * This class will be used as an intermediary between the HLA-specific driver code
- * (Or test driver code) and the entity itself.  This class should contain methods
+ * (Or test driver code) and the state itself.  This class should contain methods
  * and callbacks to be accessed when interactions are received or need to be sent.
  *
  * The primary goal of this class is to expose an interface to the functionality
- * of the entity, without depending on HLA to run tests against this behavior.
+ * of the state, without depending on HLA to run tests against this behavior.
  *
  *
  * Created by Andrew on 1/12/2017.
@@ -24,10 +24,10 @@ public class SimulationEntityExecution {
     public double gridCellSize;
     public double movementSpeed;
 
-    public SimulationEntity simulationEntity;
+    public SimulationEntityState simulationEntityState;
 
-    public SimulationEntityExecution(SimulationEntity simulationEntity) {
-        this.simulationEntity = simulationEntity;
+    public SimulationEntityExecution(SimulationEntityState simulationEntityState) {
+        this.simulationEntityState = simulationEntityState;
 
         this.gridCellSize = 1;
         this.movementSpeed = 0.2;
@@ -37,13 +37,13 @@ public class SimulationEntityExecution {
     /**
      *
      * This method is called once per simulation frame.  Movement updates are made first,
-     * followed by the active updates of the implementing entities, iff the entity is stopped.
+     * followed by the active updates of the implementing entities, iff the state is stopped.
      *
      */
     public void activeUpdate() {
         movementUpdate();
 
-        if(simulationEntity.movementState == SimulationEntity.MovementState.Stopped) {
+        if(simulationEntityState.movementState == SimulationEntityState.MovementState.Stopped) {
             this.activeEntityUpdate();
         }
 
@@ -58,20 +58,20 @@ public class SimulationEntityExecution {
      *
      */
     public void movementUpdate() {
-        if(this.simulationEntity.movementState == SimulationEntity.MovementState.InMotion) {
+        if(this.simulationEntityState.movementState == SimulationEntityState.MovementState.InMotion) {
             //  We need to gridMove on the first of each path
-            if(this.simulationEntity.isOnNewPath) {
-                this.simulationEntity.gridMovement();
-                this.simulationEntity.isOnNewPath = false;
+            if(this.simulationEntityState.isOnNewPath) {
+                this.simulationEntityState.gridMovement();
+                this.simulationEntityState.isOnNewPath = false;
             } else {
-                boolean targetArrival = this.simulationEntity.moveTowardsTarget();
-                //logger.debug("In motion and moved towards target arrived=" + targetArrival + " new pos=" + simulationEntity.position[0] + "," + simulationEntity.position[1]);
+                boolean targetArrival = this.simulationEntityState.moveTowardsTarget();
+                //logger.debug("In motion and moved towards target arrived=" + targetArrival + " new pos=" + simulationEntityState.position[0] + "," + simulationEntityState.position[1]);
 
                 if (targetArrival) {
-                    if (!this.simulationEntity.path.isEmpty()) {
-                        this.simulationEntity.gridMovement();
+                    if (!this.simulationEntityState.path.isEmpty()) {
+                        this.simulationEntityState.gridMovement();
                     } else {
-                        this.simulationEntity.stopTransit();
+                        this.simulationEntityState.stopTransit();
                     }
                 }
             }
@@ -89,8 +89,8 @@ public class SimulationEntityExecution {
 
     /**
      *
-     * This method is called during the active passiveUpdate cycle iff the entity is stopped.  This method
-     * should be overriden by child classes, to create higher level entity logic.
+     * This method is called during the active passiveUpdate cycle iff the state is stopped.  This method
+     * should be overriden by child classes, to create higher level state logic.
      *
      */
     public void activeEntityUpdate() {
@@ -104,12 +104,12 @@ public class SimulationEntityExecution {
      * @param path
      *
      */
-    public void receivePathFindingInteractionResponse(Queue<SimulationEntity.GridIndex> path) {
+    public void receivePathFindingInteractionResponse(Queue<SimulationEntityState.GridIndex> path) {
         logger.debug(path);
         if(path == null || path.isEmpty()) {
-            this.simulationEntity.nullPathFindingResponse();
+            this.simulationEntityState.nullPathFindingResponse();
         } else {
-            this.simulationEntity.beginTransit(path);
+            this.simulationEntityState.beginTransit(path);
         }
     }
 
@@ -120,7 +120,7 @@ public class SimulationEntityExecution {
      * @param success
      */
     public void receiveGridMovementInteractionResponse(boolean success) {
-        this.simulationEntity.gridMovementResponse(success);
+        this.simulationEntityState.gridMovementResponse(success);
     }
 
     /**

@@ -1,4 +1,4 @@
-package entity;
+package state;
 
 import algo.AStar;
 import environment.GridCell;
@@ -10,8 +10,8 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created by Andrew on 1/1/2017.
  */
-public class EnvironmentGridEntity {
-    final static Logger logger = Logger.getLogger(EnvironmentGridEntity.class);
+public class EnvironmentGridState {
+    final static Logger logger = Logger.getLogger(EnvironmentGridState.class);
 
     public ConcurrentHashMap<Long, GridCell> entityToGridCellMap;
     public ConcurrentHashMap<Long, Integer> entityToCollisionRadiusMap;
@@ -30,7 +30,7 @@ public class EnvironmentGridEntity {
      * @param gridWidth
      * @param gridHeight
      */
-    public EnvironmentGridEntity(int gridWidth, int gridHeight) {
+    public EnvironmentGridState(int gridWidth, int gridHeight) {
         this.gridWidth = gridWidth;
         this.gridHeight = gridHeight;
 

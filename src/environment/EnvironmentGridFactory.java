@@ -1,18 +1,18 @@
 package environment;
 
-import entity.EnvironmentGridEntity;
+import state.EnvironmentGridState;
 
 /**
  * Created by Andrew on 1/8/2017.
  */
 public class EnvironmentGridFactory {
-    public static EnvironmentGridEntity gridFromTXT(String[] gridLines) {
+    public static EnvironmentGridState gridFromTXT(String[] gridLines) {
         assert gridLines.length > 0;
 
         int height = gridLines.length;
         int width  = gridLines[0].length()/2;
 
-        EnvironmentGridEntity grid = new EnvironmentGridEntity(width, height);
+        EnvironmentGridState grid = new EnvironmentGridState(width, height);
 
         for(int i=0; i<height; i++) {
             String txtLine = gridLines[i];
@@ -30,7 +30,7 @@ public class EnvironmentGridFactory {
         return grid;
     }
 
-    public static EnvironmentGridEntity gridFromTXT(String txtGrid) {
+    public static EnvironmentGridState gridFromTXT(String txtGrid) {
         String[] gridLines = txtGrid.split("\n");
         assert gridLines.length > 0;
 

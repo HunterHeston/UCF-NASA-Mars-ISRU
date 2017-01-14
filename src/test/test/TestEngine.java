@@ -1,11 +1,11 @@
 package test.test;
 
-import entity.EnvironmentGridEntity;
+import state.EnvironmentGridState;
 import execution.EnvironmentGridExecution;
 import execution.SimulationEntityExecution;
 import org.apache.log4j.Logger;
 import siso.smackdown.utilities.Vector3;
-import test.federate.mock.SimulationEntityMock;
+import test.federate.passive.PassiveSimulationEntity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,10 +20,10 @@ import java.util.HashMap;
 public class TestEngine {
     final static Logger logger = Logger.getLogger(TestEngine.class);
 
-    public EnvironmentGridEntity gridEntity;
+    public EnvironmentGridState gridEntity;
     public EnvironmentGridExecution gridExecution;
     public ArrayList<SimulationEntityExecution> entities;
-    public HashMap<SimulationEntityExecution, SimulationEntityMock> mockMap;
+    public HashMap<SimulationEntityExecution, PassiveSimulationEntity> mockMap;
 
     public TestEngine(EnvironmentGridExecution gridExecution) {
         this.gridExecution = gridExecution;
@@ -43,14 +43,14 @@ public class TestEngine {
 
     public void addEntity(long hlaID, int collisionRadius,
                           SimulationEntityExecution execution,
-                          SimulationEntityMock mock) {
+                          PassiveSimulationEntity mock) {
         try {
-            gridEntity.placeEntity(hlaID, execution.simulationEntity.gridIndex.col,
-                                execution.simulationEntity.gridIndex.row, collisionRadius);
+            gridEntity.placeEntity(hlaID, execution.simulationEntityState.gridIndex.col,
+                                execution.simulationEntityState.gridIndex.row, collisionRadius);
 
             this.entities.add(execution);
             this.mockMap.put(execution, mock);
-        } catch (EnvironmentGridEntity.PlacementException e) {
+        } catch (EnvironmentGridState.PlacementException e) {
             logger.error(e);
             assert false;
         }
@@ -59,7 +59,7 @@ public class TestEngine {
     public void update() {
         for(SimulationEntityExecution execution : entities) {
             execution.activeUpdate();
-            SimulationEntityMock mock = mockMap.get(execution);
+            PassiveSimulationEntity mock = mockMap.get(execution);
             if(mock != null) {
                 mock.passiveUpdate();
             }

@@ -1,19 +1,19 @@
-package entity;
+package state;
 
 import org.apache.log4j.Logger;
 
 /**
  *
- * This class extends SimulationEntity and adds functionality
+ * This class extends SimulationEntityState and adds functionality
  * related to charge.  There are several methods that need to
  * be implemented, to ensure that the battery is handled appropriately
- * for all entity implementations.
+ * for all state implementations.
  *
  * TODO Unit Test Integration Test
  * Created by rick on 1/12/17.
  */
-public abstract class ChargeableEntity extends SimulationEntity {
-    final static Logger logger = Logger.getLogger(ChargeableEntity.class);
+public abstract class ChargeableEntityState extends SimulationEntityState {
+    final static Logger logger = Logger.getLogger(ChargeableEntityState.class);
 
     public static boolean adjacentToISRU(GridIndex pos, GridIndex isruPos) {
         int rowDelta, colDelta;
@@ -35,13 +35,13 @@ public abstract class ChargeableEntity extends SimulationEntity {
     public ChargeState chargeState = ChargeState.Null;
     public GridIndex isruIndex;
 
-    public ChargeableEntity(int gridX, int gridY, int isruGridX, int isruGridY, double movementSpeed, double gridCellSize) {
+    public ChargeableEntityState(int gridX, int gridY, int isruGridX, int isruGridY, double movementSpeed, double gridCellSize) {
         super(gridX, gridY, movementSpeed, gridCellSize);
         this.isruIndex = new GridIndex(isruGridX, isruGridY);
     }
 
     /**
-     * @return true when the entity is dead
+     * @return true when the state is dead
      */
     public abstract boolean isDead();
 
@@ -51,7 +51,7 @@ public abstract class ChargeableEntity extends SimulationEntity {
     public abstract boolean chargeFull();
 
     /**
-     * @return true when the entity needs a charge
+     * @return true when the state needs a charge
      */
     public abstract boolean needsCharge();
 
@@ -73,6 +73,12 @@ public abstract class ChargeableEntity extends SimulationEntity {
 
     public abstract Object getCharge();
 
+    /**
+     *
+     * Call this method to magically handle charge sequence. *Should* return
+     * control with a full battery if needed (and possible).
+     *
+     */
     public void handleCharge() {
         assert this.chargeState == ChargeState.Null;
 
