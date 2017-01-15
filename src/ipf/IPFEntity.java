@@ -81,6 +81,22 @@ public class IPFEntity {
 	public IPFEntity(){
 		
 	}
+	
+	public void setAtmosphereProcessing(boolean b){
+		this.atmosphereProcessing = b;
+	}
+	
+	public void setElectrolysisProcessing(boolean b){
+		this.electrolysisProcessing = b;
+	}
+	
+	public void setSabatierProcessing(boolean b){
+		this.sabatierProcessing = b;
+	}
+	
+	public void setRegolithProcessing(boolean b){
+		this.regolithProcessing = b;
+	}
 
 	public void changeProcessingState(ProcessingState s) {
 		this.processingState = s;

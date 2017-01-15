@@ -172,7 +172,7 @@ public class IPFFederate extends SEEAbstractFederate implements Observer {
 			}
 			break;
 		case HaveRegolith:
-			ipf.regolithExtraction();
+			//Regolith extraction handled by regolith states
 			ipf.changeProcessingState(ProcessingState.NeedHydrogen);
 			break;
 		case NeedRegolith:
