@@ -69,6 +69,11 @@ public class IPFEntity {
 	public double amountPower;
 	public boolean powerConnection;
 	
+	public boolean atmosphereProcessing;
+	public boolean electrolysisProcessing;
+	public boolean sabatierProcessing;
+	public boolean regolithProcessing;
+	
 	public RegolithState regolithState = RegolithState.NULL;
 	public ChargeState chargeState = ChargeState.NULL;
 	public ProcessingState processingState = ProcessingState.NULL;

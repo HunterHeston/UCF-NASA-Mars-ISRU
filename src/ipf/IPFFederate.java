@@ -63,6 +63,7 @@ public class IPFFederate extends SEEAbstractFederate implements Observer {
 			}
 			break;
 		case Depositing:
+			ipf.setRegolithProcessing(false);
 			if(ipf.amountUnprocessedRegolith == 0.0){
 				//Send DepositRegolithResponse
 				ipf.changeRegolithState(RegolithState.WaitingForDeposit);
@@ -72,6 +73,7 @@ public class IPFFederate extends SEEAbstractFederate implements Observer {
 			}
 			break;
 		case Processing:
+			ipf.setRegolithProcessing(true);
 			if(ipf.amountUnprocessedRegolith > 0.0 &&
 					ipf.amountUnprocessedRegolith < ipf.maxUnprocessedRegolithCapacity){
 				// Process Regolith
@@ -83,6 +85,9 @@ public class IPFFederate extends SEEAbstractFederate implements Observer {
 				// Process Regolith
 			}
 			break;
+		case WaitingForLoad:
+			ipf.setRegolithProcessing(false);
+			break;
 		case ProcessingAndWaitingForDeposit:
 			if (ipf.amountProcessedRegolith == ipf.maxProcessedRegolithCapacity || 
 					ipf.amountUnprocessedRegolith == 0.0){
@@ -92,6 +97,7 @@ public class IPFFederate extends SEEAbstractFederate implements Observer {
 		case Loading:
 			//Send LoadRegolithResponse
 			ipf.changeRegolithState(RegolithState.NULL);
+			ipf.changeProcessingState(ProcessingState.NULL);
 			break;
 		default:
 			break;
@@ -107,6 +113,9 @@ public class IPFFederate extends SEEAbstractFederate implements Observer {
 			break;
 		case StorageFull:
 			// This may be able to be removed if nothing needs to be done here
+			ipf.setSabatierProcessing(false);
+			ipf.setAtmosphereProcessing(false);
+			ipf.setElectrolysisProcessing(false);
 			break;
 		case StorageNotFull:
 			if(ipf.resourcesAvailable()){
@@ -116,6 +125,7 @@ public class IPFFederate extends SEEAbstractFederate implements Observer {
 			}
 			break;
 		case NeedResources:
+			ipf.setSabatierProcessing(false);
 			if(ipf.hasEnoughHydrogen()){
 				ipf.changeProcessingState(ProcessingState.NeedCarbonDioxide);
 			} else if(ipf.hasEnoughCarbonDioxide()){
@@ -124,18 +134,22 @@ public class IPFFederate extends SEEAbstractFederate implements Observer {
 				ipf.changeProcessingState(ProcessingState.NeedHydrogenAndCarbonDioxide);
 			}
 			break;
+		case HaveResources:
+			ipf.setSabatierProcessing(true);
+			ipf.changeProcessingState(ProcessingState.NULL);
+			break;
 		case NeedCarbonDioxide:
 			if(ipf.hasEnoughCarbonDioxide()){
 				ipf.changeProcessingState(ProcessingState.StorageNotFull);
 			} else {
-				ipf.processAtmosphere();
+				ipf.setAtmosphereProcessing(true);
 			}
 			break;
 		case NeedHydrogenAndCarbonDioxide:
 			if(ipf.hasEnoughCarbonDioxide()){
 				ipf.changeProcessingState(ProcessingState.NeedHydrogen);
 			} else {
-				ipf.processAtmosphere();
+				ipf.setAtmosphereProcessing(true);
 			}
 			break;
 		case NeedHydrogen:
@@ -146,10 +160,11 @@ public class IPFFederate extends SEEAbstractFederate implements Observer {
 			}
 			break;
 		case HaveWater:
-			ipf.electrolysis();
+			ipf.setElectrolysisProcessing(true);
 			ipf.changeProcessingState(ProcessingState.StorageNotFull);
 			break;
 		case NeedWater:
+			ipf.setElectrolysisProcessing(false);
 			if(ipf.hasEnoughRegolith()){
 				ipf.changeProcessingState(ProcessingState.HaveRegolith);
 			} else {
@@ -164,6 +179,22 @@ public class IPFFederate extends SEEAbstractFederate implements Observer {
 			ipf.changeProcessingState(ProcessingState.WaitingForRegolith);
 		default:
 			break;
+		}
+		
+		if(ipf.atmosphereProcessing){
+			ipf.processAtmosphere();
+		}
+		
+		if(ipf.electrolysisProcessing){
+			ipf.electrolysis();
+		}
+		
+		if(ipf.sabatierProcessing){
+			ipf.sabatier();
+		}
+		
+		if(ipf.regolithProcessing){
+			ipf.processRegolith();
 		}
 		
 		try {
