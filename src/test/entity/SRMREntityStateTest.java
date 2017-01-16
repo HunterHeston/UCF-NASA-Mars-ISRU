@@ -13,6 +13,11 @@ import state.SimulationEntityState;
 import state.SimulationEntityState.GridIndex;
 import state.SimulationEntityState.MovementState;
 
+/**
+ * 
+ * @author John-Paul Steed
+ *
+ */
 public class SRMREntityStateTest {
 	final static Logger logger = Logger.getLogger(SRMREntityStateTest.class);
 	

@@ -5,6 +5,11 @@ import org.apache.log4j.Logger;
 import environment.RegolithData;
 import state.SimpleChargeableEntityState;
 
+/**
+ * 
+ * @author John-Paul Steed
+ *
+ */
 public class SRMREntityState extends SimpleChargeableEntityState {
 
 	final static Logger logger = Logger.getLogger(SRMREntityState.class);
