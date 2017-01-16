@@ -45,6 +45,20 @@ public class SRMREntityState extends SimpleChargeableEntityState {
 		this.userState = userState;
 	}
 	
+	
+	public SRMRState getUserState() {
+		return userState;
+	}
+	
+
+	public RegolithData getPayload() {
+		return payload;
+	}
+
+	public void setPayload(RegolithData payload) {
+		this.payload = payload;
+	}
+
 	public void beginMoveToISRU(){
 		assert userState == SRMRState.Standby;
 		
@@ -90,9 +104,10 @@ public class SRMREntityState extends SimpleChargeableEntityState {
 	
 	public void beginLoadRegolith(){
 		assert userState == SRMRState.AtISRU;
-		assert payload.quantity >= EMPTY && payload.quantity <= maxPayload;
+		if(payload != null)
+			assert payload.quantity >= EMPTY && payload.quantity <= maxPayload;
 		
-		if(payload.quantity < maxPayload){
+		if(payload == null || payload.quantity < maxPayload){
 			setUserState(SRMRState.LoadRegolith);
 			logger.debug("SRMR State transition: AtISRU -> LoadRegolith");
 		}else{
@@ -104,9 +119,9 @@ public class SRMREntityState extends SimpleChargeableEntityState {
 	
 	public void LoadRegolithResponse(RegolithData payload){
 		assert userState == SRMRState.LoadRegolith;
+		this.payload = payload;
 		assert payload.quantity >= EMPTY && payload.quantity <= maxPayload;
 		
-		this.payload = payload;
 		if(payload.quantity == EMPTY){
 			setUserState(SRMRState.AtISRU);
 			logger.debug("SRMR State transition: LoadRegolith -> AtISRU");
@@ -126,8 +141,8 @@ public class SRMREntityState extends SimpleChargeableEntityState {
 	public void selectDumpSiteResponse(int locationX, int locationY){
 		assert userState == SRMRState.WaitForDumpSite;
 		
-		dumpSiteIndex.row = locationX;
-		dumpSiteIndex.col = locationY;
+		dumpSiteIndex = new GridIndex(locationX, locationY);
+		
 		this.beginPathFinding(dumpSiteIndex.row, dumpSiteIndex.col);
 		setUserState(SRMRState.MoveToDumpSite);
 		logger.debug("SRMR State transition: WaitForDumpSite -> MoveToDumpSite");
@@ -153,6 +168,7 @@ public class SRMREntityState extends SimpleChargeableEntityState {
 	
 	public void dumpRegolithResponse(RegolithData payload){
 		assert userState == SRMRState.DumpRegolith;
+		assert payload != null;
 		assert payload.quantity >= EMPTY && payload.quantity <= maxPayload;
 		
 		this.payload = payload;
