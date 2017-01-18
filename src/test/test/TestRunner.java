@@ -33,16 +33,23 @@ public class TestRunner extends Canvas implements Runnable {
 
         for(int i=0; i<grid.length; i++) {
             for(int j=0; j<grid.length; j++) {
+
+                GridCell cell = grid[i][j];
                 g.setColor(Color.GREEN);
                 g.drawRect((j*cellSize) + 6, (i*cellSize) + 6, cellSize, cellSize);
 
-                if(grid[i][j].isBlocked()) {
+                if(cell.isBlocked()) {
                     g.setColor(Color.white);
                     g.fillRect((j*cellSize) + 6, (i*cellSize) + 6, cellSize, cellSize);
-                } else if(grid[i][j].isOccupied()) {
+                } else if(cell.isOccupied()) {
                     g.setColor(Color.cyan);
                     g.drawOval((j*cellSize) + 9, (i*cellSize) + 9, cellSize-12, cellSize-12);
+                } else {
+                    Color waterColor = new Color(0, 0, (int) (255.0 * cell.averageWaterContent()));
+                    g.setColor(waterColor);
+                    g.fillRect((j*cellSize) + 9, (i*cellSize) + 9, cellSize-12, cellSize-12);
                 }
+
             }
         }
     }
