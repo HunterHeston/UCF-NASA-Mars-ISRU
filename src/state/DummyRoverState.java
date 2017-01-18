@@ -14,7 +14,6 @@ public class DummyRoverState extends SimpleChargeableEntityState {
         GoingToPlace,
     }
 
-
     /**
      *
      * Rover specific implementation state, start in standby
