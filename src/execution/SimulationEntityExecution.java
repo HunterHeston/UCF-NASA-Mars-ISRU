@@ -58,9 +58,11 @@ public class SimulationEntityExecution {
      *
      */
     public void movementUpdate() {
-        if(this.simulationEntityState.movementState == SimulationEntityState.MovementState.InMotion) {
-            boolean targetArrival = this.simulationEntityState.moveTowardsTarget();
 
+        if(this.simulationEntityState.movementState == SimulationEntityState.MovementState.InMotion) {
+
+            boolean targetArrival = this.simulationEntityState.moveTowardsTarget();
+            //logger.debug("targetArrival: " + targetArrival);
             if (targetArrival) {
                 if (!this.simulationEntityState.path.isEmpty()) {
                     this.simulationEntityState.gridMovement();

@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
  * Created by rick on 1/13/17.
  */
 public class DummyRoverState extends SimpleChargeableEntityState {
+    public boolean pathfail = false;
     final static Logger logger = Logger.getLogger(DummyRoverState.class);
 
     public enum RoverState {

@@ -63,7 +63,7 @@ public class EnvironmentGridExecution {
     public GridCell[] receivePathFindingInteraction(long hlaID, int targetX, int targetY) {
         GridCell start = this.grid.getCellFromHLAId(hlaID);
         GridCell end = this.grid.getCell(targetX, targetY);
-        logger.debug("Received Pathfinding interaction " + start + " " + end);
+        //logger.debug("Received Pathfinding interaction " + start + " " + end);
         return this.grid.findPath(start, end);
     }
 

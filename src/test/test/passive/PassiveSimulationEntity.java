@@ -7,6 +7,7 @@ import execution.SimulationEntityExecution;
 import org.apache.log4j.Logger;
 
 import java.util.LinkedList;
+import java.util.Random;
 
 /**
  *
@@ -74,8 +75,6 @@ public class PassiveSimulationEntity extends PassiveUpdateMock {
         } else if(this.entityExecution.simulationEntityState.movementState ==
                        SimulationEntityState.MovementState.GridMovement) {
 
-
-            logger.debug("Requesting GridMovement to " + this.entityExecution.simulationEntityState.path.peek());
             boolean success = this.gridExecution.receiveGridMoveInteraction(hlaID,
                     this.entityExecution.simulationEntityState.path.peek().col,
                     this.entityExecution.simulationEntityState.path.peek().row);

@@ -76,6 +76,10 @@ public class TestRunner extends Canvas implements Runnable {
 
                 g.setColor(Color.white);
                 g.drawString("" + rover, 15, gridHeight + (int)(25*rover.identifier) + 25);
+
+                g.setColor(Color.magenta);
+                g.drawString("" + rover.identifier, (int)(execution.simulationEntityState.position[0]*cellSize) + 6,
+                        (int)(execution.simulationEntityState.position[1]*cellSize) + 6);
             }
         }
 

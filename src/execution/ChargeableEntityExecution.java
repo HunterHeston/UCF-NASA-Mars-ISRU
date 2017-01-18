@@ -1,5 +1,6 @@
 package execution;
 
+import org.apache.log4j.Logger;
 import state.ChargeableEntityState;
 import state.SimulationEntityState;
 
@@ -7,6 +8,8 @@ import state.SimulationEntityState;
  * Created by rick on 1/13/17.
  */
 public class ChargeableEntityExecution extends SimulationEntityExecution {
+    final static Logger logger = Logger.getLogger(ChargeableEntityExecution.class);
+
     public ChargeableEntityExecution(ChargeableEntityState simulationEntity) {
         super(simulationEntity);
     }

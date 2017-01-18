@@ -50,6 +50,11 @@ public class TestEngine {
 
     public void update() {
         for(SimulationEntityExecution execution : entities) {
+//            logger.debug(String.format("U %d : %s %s %s", execution.simulationEntityState.identifier,
+//                    execution.simulationEntityState.movementState,
+//                    execution.simulationEntityState.targetGridIndex,
+//                    execution.simulationEntityState.finalGridIndex));
+
             execution.activeUpdate();
             PassiveSimulationEntity mock = mockMap.get(execution);
             if(mock != null) {
